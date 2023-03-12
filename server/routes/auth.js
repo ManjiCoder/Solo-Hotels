@@ -1,4 +1,5 @@
 require('dotenv').config();
+/* eslint-disable consistent-return */
 
 // console.log(process.env.PORT);
 const express = require('express');
@@ -6,6 +7,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const UserModel = require('../models/User');
+const fetchUser = require('../middleware/fetchUser');
 
 const router = express.Router();
 
@@ -17,7 +19,6 @@ router.post(
     body('email', 'Please enter valid email').isEmail(),
     body('password', 'Password should be atleast 5 characters').isLength({ min: 5 }),
   ],
-  // eslint-disable-next-line consistent-return
   async (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
@@ -46,7 +47,7 @@ router.post(
           id: newUser._id,
         },
       };
-      const authToken = jwt.sign(payload, process.env.SECRECT_KEY);
+      const authToken = jwt.sign(payload, process.env.JWT_SECRECT_KEY);
       // console.log(authToken);
       res.json({ msg: 'Account Created Successfully', authToken });
     } catch (error) {
@@ -63,7 +64,6 @@ router.post(
     body('email', 'Please enter valid email').isEmail(),
     body('password', 'Password should be atleast 5 characters').isLength({ min: 5 }),
   ],
-  // eslint-disable-next-line consistent-return
   async (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
     const errors = validationResult(req);
@@ -94,7 +94,7 @@ router.post(
           id: checkUser._id,
         },
       };
-      const authToken = jwt.sign(payload, process.env.SECRECT_KEY);
+      const authToken = jwt.sign(payload, process.env.JWT_SECRECT_KEY);
       // console.log(authToken);
       res.json({ msg: 'Login Successfully', authToken });
     } catch (error) {
@@ -104,4 +104,20 @@ router.post(
   },
 );
 
+// ROUTE 3: Get Data of User Login using POST "/auth/user" Login Require
+router.post(
+  '/user',
+  fetchUser,
+  async (req, res) => {
+    try {
+      const userId = req.user.id; // verify json web token & getting user id in req
+      // console.log(userId);
+      const user = await UserModel.find({ _id: userId }).select('-password'); // select is used to ignore
+      res.json({ user });
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send('Some Error Occured');
+    }
+  },
+);
 module.exports = router;

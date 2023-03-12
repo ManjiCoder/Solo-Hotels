@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cros": "^1.0.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-validator": "^6.15.0",
