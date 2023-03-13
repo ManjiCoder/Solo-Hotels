@@ -13,7 +13,8 @@ connectToMongo(); // Database Connection Fuction
 
 // Available Routes
 app.use('/auth', require('./routes/auth'));
-app.use('/rooms', require('./routes/rooms'));
+app.use('/hotel', require('./routes/hotel'));
+app.use('/admin', require('./routes/admin'));
 
 app.listen(port, () => {
   console.log(`Solo-Hotels - Backend app listening at http://localhost${port}`);

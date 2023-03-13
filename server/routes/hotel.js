@@ -1,7 +1,6 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable consistent-return */
 const express = require('express');
-const { body, validationResult } = require('express-validator');
 const fetchUser = require('../middleware/fetchUser');
 const HotelModel = require('../models/Hotel');
 
@@ -90,28 +89,4 @@ router.get('/cities', fetchUser, async (req, res) => {
   }
 });
 
-// ROUTE: 4 Add Hotel Admin Using POST "rooms/add"
-router.post('/add', [
-  body('name').exists(),
-  body('address').exists(),
-  body('roomType').exists(),
-], fetchUser, async (req, res) => {
-  // Finds the validation errors in this request and wraps them in an object with handy functions
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const error = errors.array().map((obj) => obj.msg).join(' & ');
-    return res.status(400).json({ msg: error });
-  }
-  try {
-    const { name, address, roomType } = req.body;
-    const newRoom = await HotelModel.create({
-      name, address, roomType,
-    });
-
-    res.json({ msg: 'Room Added Successfully', newRoom });
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).send('Some Error Occured');
-  }
-});
 module.exports = router;
