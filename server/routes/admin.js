@@ -11,15 +11,18 @@ const fetchUser = require('../middleware/fetchUser');
 const updateResHotel = require('../middleware/updateResHotel');
 const HotelModel = require('../models/Hotel');
 const UserModel = require('../models/User');
+const isAdmin = require('../middleware/isAdmin');
 
 const router = express.Router();
 
 // END-POINT FOR USERS
 // ROUTE: 1 Get all User from db using GET => "/admin/users"
-router.get('/users/', fetchUser, async (req, res) => {
+router.get('/users', fetchUser, isAdmin, async (req, res) => {
   try {
-    const users = await UserModel.find({}, { name: 1 });
+    const users = await UserModel.find({}, { name: 1, role: 1 });
+    // console.log(users);
     res.json({ users });
+    // return res.status(401).json({ msg: 'You don\'t have permission' });
   } catch (error) {
     console.log(error.message);
     res.status(500).send('Some Error Occured');
@@ -27,11 +30,11 @@ router.get('/users/', fetchUser, async (req, res) => {
 });
 
 // ROUTE: 2 Update User using from db using PUT => "/admin/users/update/:id"
-router.put('/users/update/:id', fetchUser, async (req, res) => {
+router.put('/users/update/:id', fetchUser, isAdmin, async (req, res) => {
   try {
     const { name, email, role } = req.body;
     const checkUser = await UserModel.find({ _id: req.params.id }).select('-password');
-    console.log(checkUser);
+    // console.log(checkUser);
     if (!checkUser) return res.status(400).json({ msg: 'User Not Found' });
     const newUser = {};
     // We can update anyfield but UPDATE ONLY role
@@ -52,7 +55,7 @@ router.put('/users/update/:id', fetchUser, async (req, res) => {
 });
 
 // ROUTE: 3 Delete User using from db using DELETE => "/admin/users/delete/:id"
-router.delete('/users/delete/:id', fetchUser, async (req, res) => {
+router.delete('/users/delete/:id', fetchUser, isAdmin, async (req, res) => {
   try {
     const checkUser = await UserModel.find({ _id: req.params.id }).select('-password');
     console.log(checkUser);
@@ -73,7 +76,7 @@ router.delete('/users/delete/:id', fetchUser, async (req, res) => {
 
 // END-POINT FOR HOTELS
 // ROUTE: 4 Get all search Hotels from db using GET => "/admin/users/search"
-router.get('/hotels/search', fetchUser, async (req, res) => {
+router.get('/hotels/search', fetchUser, isAdmin, async (req, res) => {
   try {
     const data = await HotelModel.find(req.body);
     res.json(data);
@@ -84,7 +87,7 @@ router.get('/hotels/search', fetchUser, async (req, res) => {
 });
 
 // ROUTE: 5 Get all Hotels from db using GET => "/admin/hotels"
-router.get('/hotels', fetchUser, async (req, res) => {
+router.get('/hotels', fetchUser, isAdmin, async (req, res) => {
   try {
     const data = await HotelModel
       .find({}, { property_name: 1, state: 1 })
@@ -97,10 +100,27 @@ router.get('/hotels', fetchUser, async (req, res) => {
 });
 
 // ROUTE: 6 Add Hotel by Admin Using POST => "admin/hotels/add"
-router.post('/hotels/add', fetchUser, async (req, res) => {
+router.post('/hotels/add', fetchUser, isAdmin, async (req, res) => {
   try {
     const {
+      address,
+      area,
+      city,
+      country,
+      crawl_date,
+      hotel_description,
+      hotel_facilities,
+      hotel_star_rating,
+      landmark,
+      locality,
+      property_id,
       property_name,
+      property_type,
+      province,
+      room_count,
+      room_facilities,
+      room_type,
+      state,
     } = req.body;
     const checkRoom = await HotelModel.find({ property_name });
     // console.log(checkRoom);
@@ -135,7 +155,7 @@ router.post('/hotels/add', fetchUser, async (req, res) => {
 });
 
 // ROUTE: 7 Update Hotel by Admin Using PUT => "admin/hotels/add"
-router.put('/hotels/update/:id', fetchUser, updateResHotel, async (req, res) => {
+router.put('/hotels/update/:id', fetchUser, isAdmin, updateResHotel, async (req, res) => {
   try {
     const checkRoom = await HotelModel.find({ _id: req.params.id });
     // console.log(checkRoom);
@@ -157,7 +177,7 @@ router.put('/hotels/update/:id', fetchUser, updateResHotel, async (req, res) => 
 });
 
 // ROUTE: 8 Delete Hotel by Admin Using DELETE => "admin/hotels/remove/:id"
-router.delete('/hotels/remove/:id', fetchUser, async (req, res) => {
+router.delete('/hotels/remove/:id', fetchUser, isAdmin, async (req, res) => {
   try {
     const checkRoom = await HotelModel.findByIdAndDelete({ _id: req.params.id });
     if (!checkRoom) return res.status(400).json({ msg: 'Room doesn\'t exists' });

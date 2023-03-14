@@ -28,7 +28,9 @@ router.post(
     }
 
     try {
-      const { name, email, password } = req.body;
+      const {
+        name, email, password, role,
+      } = req.body;
       // Hashing Password Using bycrypt
       const salt = await bcrypt.genSalt(10);
       const securedPassword = await bcrypt.hash(password, salt);
@@ -38,7 +40,9 @@ router.post(
       const checkUser = await UserModel.findOne({ email });
       if (checkUser) return res.status(400).json({ msg: 'Sorry email already exists' });
       // Saving User Info in db
-      const newUser = await UserModel.create({ name, email, password: securedPassword });
+      const newUser = await UserModel.create({
+        name, email, password: securedPassword, role,
+      });
 
       // Creating auth-token
       const payload = {
