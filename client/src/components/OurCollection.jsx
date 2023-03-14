@@ -8,50 +8,11 @@ function OurCollection() {
       img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWaJtsXaL7tgfbS4pikSnQxJMdzk_LfqMSIg&usqp=CAU',
     },
     {
-      name: 'SOLO Home',
+      name: 'SOLO Home1',
       description: 'Modern and stylish home stay',
       img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWaJtsXaL7tgfbS4pikSnQxJMdzk_LfqMSIg&usqp=CAU',
     },
-    {
-      name: 'SOLO Home',
-      description: 'Modern and stylish home stay',
-      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWaJtsXaL7tgfbS4pikSnQxJMdzk_LfqMSIg&usqp=CAU',
-    },
-    {
-      name: 'SOLO Home',
-      description: 'Modern and stylish home stay',
-      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWaJtsXaL7tgfbS4pikSnQxJMdzk_LfqMSIg&usqp=CAU',
-    },
-    {
-      name: 'SOLO Home',
-      description: 'Modern and stylish home stay',
-      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWaJtsXaL7tgfbS4pikSnQxJMdzk_LfqMSIg&usqp=CAU',
-    },
-    {
-      name: 'SOLO Home',
-      description: 'Modern and stylish home stay',
-      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWaJtsXaL7tgfbS4pikSnQxJMdzk_LfqMSIg&usqp=CAU',
-    },
-    {
-      name: 'SOLO Home',
-      description: 'Modern and stylish home stay',
-      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWaJtsXaL7tgfbS4pikSnQxJMdzk_LfqMSIg&usqp=CAU',
-    },
-    {
-      name: 'SOLO Home',
-      description: 'Modern and stylish home stay',
-      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWaJtsXaL7tgfbS4pikSnQxJMdzk_LfqMSIg&usqp=CAU',
-    },
-    {
-      name: 'SOLO Home',
-      description: 'Modern and stylish home stay',
-      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWaJtsXaL7tgfbS4pikSnQxJMdzk_LfqMSIg&usqp=CAU',
-    },
-    {
-      name: 'SOLO Home',
-      description: 'Modern and stylish home stay',
-      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWaJtsXaL7tgfbS4pikSnQxJMdzk_LfqMSIg&usqp=CAU',
-    },
+
   ];
   return (
     <>

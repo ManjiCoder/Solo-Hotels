@@ -27,7 +27,7 @@ const filterQuery = {
   state: 1,
 };
 
-// ROUTE: 1 Gell All Hotels Detail Using GET "rooms/all"
+// ROUTE: 1 Gell All Hotels Detail Using GET "hotels/all"
 router.get('/all', fetchUser, async (req, res) => {
   try {
     const page = req.query.page || 1;
@@ -38,11 +38,7 @@ router.get('/all', fetchUser, async (req, res) => {
       .skip(skip)
       .limit(limit)
       .sort({ hotel_star_rating: -1 });
-    // const rooms = await HotelModel
-    //   .find({ })
-    //   .select('hotel_star_rating')
-    //   .sort({ hotel_star_rating: -1 });
-    console.log(rooms.length);
+    // console.log(rooms.length);
     res.json({ rooms, nbHits: rooms.length });
   } catch (error) {
     console.log(error.message);
@@ -62,7 +58,7 @@ router.get('/', fetchUser, async (req, res) => {
       .limit(limit)
       .sort({ hotel_star_rating: -1 });
     //   .countDocuments(); // TODO
-    console.log(rooms.length);
+    // console.log(rooms.length);
     res.json({ rooms, nbHits: rooms.length });
   } catch (error) {
     console.log(error.message);
@@ -70,7 +66,7 @@ router.get('/', fetchUser, async (req, res) => {
   }
 });
 
-// ROUTE: 3 Gell All Cities Using GET "rooms/cities"
+// ROUTE: 3 Gell All Cities Using GET "hotels/cities"
 router.get('/cities', fetchUser, async (req, res) => {
   try {
     const rooms = await HotelModel
@@ -81,7 +77,7 @@ router.get('/cities', fetchUser, async (req, res) => {
     rooms.map((item) => {
       sets.add(item.city);
     });
-    console.log(rooms);
+    // console.log(rooms);
     res.json(Array.from(sets));
   } catch (error) {
     console.log(error.message);
