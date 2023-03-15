@@ -1,4 +1,3 @@
-require('dotenv').config();
 /* eslint-disable consistent-return */
 
 // console.log(process.env.PORT);
@@ -124,4 +123,5 @@ router.post(
     }
   },
 );
+
 module.exports = router;

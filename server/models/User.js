@@ -7,6 +7,7 @@ const UserSchema = new Schema({
   role: { type: String, default: 'user' },
   email: { type: String, require: true },
   password: { type: String, require: true },
+  // cart: { type: Array, default: [] },
   date: { type: Date, default: Date.now },
 });
 

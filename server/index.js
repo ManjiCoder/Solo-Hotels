@@ -16,6 +16,7 @@ connectToMongo(); // Database Connection Fuction
 // Available Routes
 app.use('/auth', require('./routes/auth'));
 app.use('/hotel', require('./routes/hotel'));
+app.use('/cart', require('./routes/cart'));
 app.use('/admin', require('./routes/admin'));
 
 app.listen(port, () => {
