@@ -27,16 +27,16 @@ router.get('/all', fetchUser, async (req, res) => {
 // ROUTE 2: Add Order to card of User using POST "auth/hotel/add" Login Require
 router.post('/add/:id', fetchUser, async (req, res) => {
   try {
+    // const { from, to } = req.body;
     // To Check Wheather hotel exists or not
     const checkHotel = await HotelModel.findById(req.params.id);
     const userId = req.user.id;
-    // console.log(checkHotel.address, userId);
 
     // If hotel not found in db
     if (!checkHotel) return res.status(401).json({ msg: 'Not Found Hotels' });
 
-    // Checking order
-    const isFirstOrder = await UserCartModel.findOne({});
+    // Checking order => USE FINDONE
+    const isFirstOrder = await UserCartModel.findOne({ user: userId });
 
     // If Order of User is not first order, So Update the roomCount
     if (isFirstOrder) {
@@ -50,16 +50,16 @@ router.post('/add/:id', fetchUser, async (req, res) => {
 
       //   Updating the cart only if user req the same order with same hotel
       if (updateRoomCount.length !== 0) {
-        const updateCart = await UserCartModel.updateOne({}, {
+        const updateCart = await UserCartModel.updateOne({ user: userId }, {
           $set: {
-            order: [...isFirstOrder.order],
+            order: [...isFirstOrder.order], // IMP
           },
         });
         // console.log(isFirstOrder.order);
-        res.json({ msg: 'Item Updated to Card Successfully', updateRoomCount, updateCart });
+        res.json({ msg: 'Item updated to card successfully', updateRoomCount, updateCart });
       } else {
         //   if user send new hotel req
-        const newOrder = await UserCartModel.updateOne({}, {
+        const newOrder = await UserCartModel.updateOne({ user: userId }, {
           $push: {
             order: { hotel: req.params.id, roomCount: 1 },
           },
@@ -70,12 +70,14 @@ router.post('/add/:id', fetchUser, async (req, res) => {
       // If Order Of User Is First Order, So Set roomCount to 1
       const firstOrder = await UserCartModel.create({
         user: userId,
-        order: [{ hotel: req.params.id, roomCount: 1 }],
+        order: [{
+          hotel: req.params.id, roomCount: 1,
+        }],
       });
       res.json({ msg: 'Item Added to Card Successfully', firstOrder });
     }
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
     res.status(500).send('Some Error Occured');
   }
 });
