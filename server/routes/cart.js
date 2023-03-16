@@ -16,8 +16,9 @@ router.get('/all', fetchUser, async (req, res) => {
   try {
     // find ther user & show thier own cart items
     const user = req.user.id;
-    const loginUser = await UserModel.findById(user, { name: 1, role: 1 });
     const carts = await UserCartModel.findOne({ user }, { user: 1, order: 1 }).sort({ date: -1 });
+    if (!carts) return res.status(400).json({ msg: 'Your cart is empty' });
+    const loginUser = await UserModel.findById(user, { name: 1, role: 1 });
     // console.log(carts);
 
     // Fetching Hotels Details
@@ -51,7 +52,6 @@ router.get('/all', fetchUser, async (req, res) => {
 // ROUTE 2: Add Order to card of User using POST "cart/add" Login Require
 router.post('/add/:id', fetchUser, async (req, res) => {
   try {
-    // const { from, to } = req.body;
     // To Check Wheather hotel exists or not
     const checkHotel = await HotelModel.findById(req.params.id);
     const userId = req.user.id;
@@ -65,7 +65,7 @@ router.post('/add/:id', fetchUser, async (req, res) => {
     // If Order of User is not first order, So Update the roomCount
     if (isFirstOrder) {
       // Checking UserLogin Id with json-token(auth-token) req.user.id
-      if (!isFirstOrder.user.toString() === userId) return res.status(401).json({ msg: 'Not Found Hotels' });
+      if (!isFirstOrder.user.toString() === userId) return res.status(401).json({ msg: 'Not allowed' });
 
       //   Updating the roomCount as it's not User First Order
       const updateRoomCount = isFirstOrder.order.filter((obj) => {
@@ -90,7 +90,7 @@ router.post('/add/:id', fetchUser, async (req, res) => {
             },
           },
         });
-        res.json({ msg: 'New order added to card successfully', newOrder });
+        res.json({ msg: newOrder.modifiedCount === 1 ? 'New order added to card successfully' : 'New order added to card unsuccessfully', newOrder });
       }
     } else {
       // If Order Of User Is First Order, So Set roomCount to 1
@@ -116,10 +116,12 @@ router.put('/update/:id', fetchUser, async (req, res) => {
   try {
     // To Check User Order exist or not
     const user = req.user.id;
-    const {
-      roomCount, hotel, from, to,
-    } = req.body;
+    const hotelId = req.params.id;
+    const { roomCount, from, to } = req.body;
+
+    // find the userCart & save changes
     const isOrder = await UserCartModel.findOne({ user });
+    // console.log(isOrder);
     if (!isOrder) return res.status(400).json({ msg: 'Your cart is empty' });
 
     // Initiaziling order Obj to store if req.body is present
@@ -128,15 +130,22 @@ router.put('/update/:id', fetchUser, async (req, res) => {
     if (from) order.from = from;
     if (to) order.to = to;
 
+    // check req.params.id is there in db
+    const isHotel = isOrder.order.filter((obj) => obj.hotel === hotelId);
+
+    // if req.params.id not found in db
+    if (isHotel.length === 0) return res.status(400).json({ msg: 'Not allowed' });
+
     // Filtering & Updating fields in order
     const newOrder = isOrder.order.filter((obj) => {
-      if (obj.hotel === hotel) {
+      if (obj.hotel === hotelId) {
         if (order.roomCount) obj.roomCount = order.roomCount;
         if (order.from) obj.from = order.from;
         if (order.to) obj.to = order.to;
       }
       return obj;
     });
+    // console.log(newOrder);
     // updating the roomCount of order;
     const saveOrder = await UserCartModel.updateOne({ user }, { $set: { order: newOrder } });
     res.json({ msg: saveOrder.modifiedCount === 1 ? 'Item updated successfully' : 'Item updated unsuccessfully', Order: isOrder.order });
@@ -151,12 +160,21 @@ router.put('/remove-order/:id', fetchUser, async (req, res) => {
   try {
     // To Check User Order exist or not
     const user = req.user.id;
-    const { hotel } = req.body;
+    const hotelId = req.params.id;
     const isOrder = await UserCartModel.findOne({ user });
     if (!isOrder) return res.status(400).json({ msg: 'Your cart is empty' });
 
+    // check req.params.id is there in db
+    // check req.params.id is there in db
+    const isHotel = isOrder.order.filter((obj) => obj.hotel === hotelId);
+
+    // if req.params.id not found in db
+    if (isHotel.length === 0) return res.status(400).json({ msg: 'Not allowed' });
     // Filtering => Delete Hotel in order
-    const newOrder = isOrder.order.filter((obj) => obj.hotel !== hotel);
+    const newOrder = isOrder.order.filter((obj) => obj.hotel !== hotelId);
+
+    // if req.params.id not found in db
+    if (newOrder.length === 0) return res.status(400).json({ msg: 'Not allowed' });
     // const updateOrder = await UserCartModel.findByIdAndUpdate(req.params.id, { $set: { order: newOrder } });
     const updateOrder = await UserCartModel.updateOne({ user }, { $set: { order: newOrder } });
     const restOrder = await UserCartModel.findOne({ user });
@@ -172,7 +190,7 @@ router.delete('/remove/:id', fetchUser, async (req, res) => {
   try {
     // To Check Wheather cart exists or not
     const isCart = await UserCartModel.findById(req.params.id);
-    if (!isCart) return res.status(401).json({ msg: 'Not allowed' });
+    if (!isCart) return res.status(401).json({ msg: 'Your cart is empty' });
     const deleteItem = await UserCartModel.findByIdAndDelete(req.params.id);
     res.json({ msg: 'Item remove from cart successfully', deleteItem });
   } catch (error) {
