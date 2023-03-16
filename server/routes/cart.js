@@ -34,6 +34,8 @@ router.get('/all', fetchUser, async (req, res) => {
           const updateHotel = {};
           updateHotel.hotel = hotelDetails[i];
           updateHotel.roomCount = obj.roomCount;
+          updateHotel.from = obj.from;
+          updateHotel.to = obj.to;
           order.push(updateHotel);
         });
         carts.order = order;
@@ -53,7 +55,7 @@ router.post('/add/:id', fetchUser, async (req, res) => {
     // To Check Wheather hotel exists or not
     const checkHotel = await HotelModel.findById(req.params.id);
     const userId = req.user.id;
-
+    const { from, to } = req.body;
     // If hotel not found in db
     if (!checkHotel) return res.status(401).json({ msg: 'Not Found Hotels' });
 
@@ -83,7 +85,9 @@ router.post('/add/:id', fetchUser, async (req, res) => {
         //   if user send new hotel req
         const newOrder = await UserCartModel.updateOne({ user: userId }, {
           $push: {
-            order: { hotel: req.params.id, roomCount: 1 },
+            order: {
+              hotel: req.params.id, roomCount: 1, from, to,
+            },
           },
         });
         res.json({ msg: 'New order added to card successfully', newOrder });
@@ -93,7 +97,10 @@ router.post('/add/:id', fetchUser, async (req, res) => {
       const firstOrder = await UserCartModel.create({
         user: userId,
         order: [{
-          hotel: req.params.id, roomCount: 1,
+          hotel: req.params.id,
+          roomCount: 1,
+          from,
+          to,
         }],
       });
       res.json({ msg: 'Item Added to Card Successfully', firstOrder });
@@ -104,27 +111,35 @@ router.post('/add/:id', fetchUser, async (req, res) => {
   }
 });
 
-// ROUTE 3: Update RoomCount to cart of User using PUT "cart/update-room-count/:id" Login Require
-router.put('/update-room-count/:id', fetchUser, async (req, res) => {
+// ROUTE 3: Update order item to cart of User using PUT "cart/update/:id" Login Require
+router.put('/update/:id', fetchUser, async (req, res) => {
   try {
     // To Check User Order exist or not
     const user = req.user.id;
-    const { roomCount, hotel } = req.body;
+    const {
+      roomCount, hotel, from, to,
+    } = req.body;
     const isOrder = await UserCartModel.findOne({ user });
     if (!isOrder) return res.status(400).json({ msg: 'Your cart is empty' });
 
-    // Filtering => Update RoomCount in order
+    // Initiaziling order Obj to store if req.body is present
+    const order = {};
+    if (roomCount) order.roomCount = roomCount;
+    if (from) order.from = from;
+    if (to) order.to = to;
+
+    // Filtering & Updating fields in order
     const newOrder = isOrder.order.filter((obj) => {
       if (obj.hotel === hotel) {
-        obj.roomCount = roomCount;
+        if (order.roomCount) obj.roomCount = order.roomCount;
+        if (order.from) obj.from = order.from;
+        if (order.to) obj.to = order.to;
       }
       return obj;
     });
     // updating the roomCount of order;
-    // const updateOrder = await UserCartModel.findByIdAndUpdate(req.params.id, { $set: { order: newOrder } });
-    const updateOrder = await UserCartModel.updateOne({ user }, { $set: { order: newOrder } });
-
-    res.json({ msg: updateOrder.modifiedCount === 1 ? 'Item updated successfully' : 'Item updated unsuccessfully', Order: isOrder.order });
+    const saveOrder = await UserCartModel.updateOne({ user }, { $set: { order: newOrder } });
+    res.json({ msg: saveOrder.modifiedCount === 1 ? 'Item updated successfully' : 'Item updated unsuccessfully', Order: isOrder.order });
   } catch (error) {
     console.log(error.message);
     res.status(500).send('Some Error Occured');
