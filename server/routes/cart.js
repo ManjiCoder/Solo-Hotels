@@ -107,7 +107,7 @@ router.post('/add/:id', fetchUser, async (req, res) => {
     }
   } catch (error) {
     // If req.params.id is not valid
-    if (error.message === `Cast to ObjectId failed for value "${req.params.id}" (type string) at path "_id" for model "Hotel"`) {
+    if (error.message === `Cast to ObjectId failed for value "${req.params.id}" (type string) at path "_id" for model "hotel"`) {
       return res.status(400).json({ msg: 'Not allowed' });
     }
     console.log(error.message);
