@@ -106,7 +106,11 @@ router.post('/add/:id', fetchUser, async (req, res) => {
       res.json({ msg: 'Item Added to Card Successfully', firstOrder });
     }
   } catch (error) {
-    console.log(error);
+    // If req.params.id is not valid
+    if (error.message === `Cast to ObjectId failed for value "${req.params.id}" (type string) at path "_id" for model "Hotel"`) {
+      return res.status(400).json({ msg: 'Not allowed' });
+    }
+    console.log(error.message);
     res.status(500).send('Some Error Occured');
   }
 });
@@ -194,6 +198,10 @@ router.delete('/remove/:id', fetchUser, async (req, res) => {
     const deleteItem = await UserCartModel.findByIdAndDelete(req.params.id);
     res.json({ msg: 'Item remove from cart successfully', deleteItem });
   } catch (error) {
+    // If req.params.id is not valid
+    if (error.message === `Cast to ObjectId failed for value "${req.params.id}" (type string) at path "_id" for model "cart"`) {
+      return res.status(400).json({ msg: 'Not allowed' });
+    }
     console.log(error.message);
     res.status(500).send('Some Error Occured');
   }
