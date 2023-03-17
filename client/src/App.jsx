@@ -7,6 +7,8 @@ import {
 import BottomNav from './components/BottomNav';
 import HeadNav from './components/HeadNav';
 import LoginAlert from './components/LoginAlert';
+import Account from './pages/Account';
+import Booking from './pages/Booking';
 import Cities from './pages/Cities';
 // import Admin from './pages/Admin';
 import Home from './pages/Home';
@@ -24,8 +26,10 @@ function App() {
         <Route path="/" exact element={<Home />} />
         <Route path="*" exact element={<LoginAlert />} />
         <Route path="/login" exact element={<Login mainTitle={mainTitle} />} />
+        <Route path="/signup" exact element={<SignUp mainTitle={mainTitle} />} />
         <Route path="/cities" exact element={<Cities />} />
-        <Route path="/signup" exact element={<SignUp />} />
+        <Route path="/account" exact element={<Account />} />
+        <Route path="/booking" exact element={<Booking />} />
         {/* Protected Route */}
         {/* <Route path="/admin">
           <isAdmin>

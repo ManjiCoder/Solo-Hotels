@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { updateCities } from '../store/slices/CitiesSlice';
 
-function CitiesDetails() {
+function ExploreCities() {
   const dispatch = useDispatch();
   const allCities = useSelector((state) => state.cities);
 
@@ -41,4 +41,4 @@ function CitiesDetails() {
   );
 }
 
-export default CitiesDetails;
+export default ExploreCities;

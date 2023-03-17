@@ -4,11 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { FaUserCircle, FaLock } from 'react-icons/fa';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import Alert from '../components/Alert';
 import { closeAlert, showAlert } from '../store/slices/AlertSlice';
+import { login } from '../store/slices/userSlice';
 
 // eslint-disable-next-line react/prop-types
 function Login({ mainTitle }) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [type, setType] = useState('password');
@@ -29,25 +32,21 @@ function Login({ mainTitle }) {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const headersList = {
-      'Content-Type': 'application/json',
-    };
-
-    const bodyContent = JSON.stringify({
-      email,
-      password,
-    });
-
-    const response = await fetch('http://localhost:3000/auth/login', {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/auth/login`, {
       method: 'POST',
-      body: bodyContent,
-      headers: headersList,
+      body: JSON.stringify({ email, password }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
     const data = await response.json();
     // console.log(data);
-    if (data) {
+    if (response.ok) {
       localStorage.setItem('token', data.authToken);
+      localStorage.setItem('user', JSON.stringify(...data.user));
+      dispatch(login(...data.user));
+      navigate('/');
     }
     dispatch(showAlert({ success: response.ok, msg: data.msg }));
     setTimeout(() => {

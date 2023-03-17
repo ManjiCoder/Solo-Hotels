@@ -37,7 +37,7 @@ router.post(
 
       // To Check Wheather User exists in db
       const checkUser = await UserModel.findOne({ email });
-      if (checkUser) return res.status(400).json({ msg: 'Sorry email already exists' });
+      if (checkUser) return res.status(400).json({ msg: 'Sorry this email is already taken' });
       // Saving User Info in db
       const newUser = await UserModel.create({
         name, email, password: securedPassword, role,
@@ -52,7 +52,10 @@ router.post(
       };
       const authToken = jwt.sign(payload, process.env.JWT_SECRECT_KEY);
       // console.log(authToken);
-      res.json({ msg: 'Account Created Successfully', authToken });
+      const user = await UserModel.find({ email }, {
+        name: 1, email: 1, role: 1, date: 1,
+      });
+      res.json({ msg: 'Account Created Successfully', user: [...user], authToken });
     } catch (error) {
       console.log(error.message);
       res.status(500).send('Some Error Occured');
@@ -99,7 +102,10 @@ router.post(
       };
       const authToken = jwt.sign(payload, process.env.JWT_SECRECT_KEY);
       // console.log(authToken);
-      res.json({ msg: 'Login Successfully', authToken });
+      const user = await UserModel.find({ email }, {
+        name: 1, email: 1, role: 1, date: 1,
+      });
+      res.json({ msg: 'Login Successfully', user: [...user], authToken });
     } catch (error) {
       console.log(error.message);
       res.status(500).send('Some Error Occured');
