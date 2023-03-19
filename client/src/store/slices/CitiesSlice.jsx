@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-return-assign */
 import { createSlice } from '@reduxjs/toolkit';
 
 const citiesSlice = createSlice({
@@ -5,7 +7,8 @@ const citiesSlice = createSlice({
   initialState: ['near me'],
   reducers: {
     updateCities(state, action) {
-      return state.concat(action.payload);
+      // TODO USE CHACHING
+      return state = action.payload;
     },
   },
 });

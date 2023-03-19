@@ -32,7 +32,7 @@ function Login({ mainTitle }) {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/auth/login`, {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}auth/login`, {
       method: 'POST',
       body: JSON.stringify({ email, password }),
       headers: {

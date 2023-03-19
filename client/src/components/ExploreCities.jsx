@@ -10,8 +10,9 @@ function ExploreCities() {
   const allCities = useSelector((state) => state.cities);
 
   const getCity = async () => {
-    console.log(allCities);
-    const { data } = await axios.get('http://localhost:3000/hotel/cities', {
+    // console.log(allCities);
+    // TODO: Use RTK or React Query => Caching needed
+    const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}hotel/cities`, {
       method: 'GET',
       headers: {
         'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQwZGJlNTdkMGY5NzI0MzcxMDQxYjk0In0sImlhdCI6MTY3ODYzOTAyN30.sApsQJZC5mKB9_Ol9__a15ogOG6Osgv__hYTaN8SegA',

@@ -14,7 +14,7 @@ function HeadNav(props) {
         <Link to="/">{mainTitle}</Link>
       </div>
       {/* Call To Action */}
-      <Link to="tel:+917517329166" className="text-2xl absolute right-5 text-gray-500 cursor-pointer hover:scale-110"><FiPhoneCall /></Link>
+      <Link to="tel:+917517329166" className="text-2xl absolute right-5 text-gray-500 cursor-pointer hover:scale-110"><FiPhoneCall className="text-red-600 " /></Link>
     </header>
   );
 }
