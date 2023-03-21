@@ -17,7 +17,6 @@
     "framer-motion": "^10.3.1",
     "react": "^18.2.0",
     "react-date-range": "^1.4.0",
-    "react-day-picker": "^8.6.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
     "react-redux": "^8.0.5",
