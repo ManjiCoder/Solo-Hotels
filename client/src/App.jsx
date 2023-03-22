@@ -3,7 +3,7 @@ import {
   Routes,
   Route,
 } from 'react-router-dom';
-import BottomNav from './components/BottomNav';
+// import BottomNav from './components/BottomNav';
 import HeadNav from './components/HeadNav';
 import LoginAlert from './components/LoginAlert';
 import Account from './pages/Account';
@@ -34,7 +34,7 @@ function App() {
         </Route>
 
       </Routes>
-      <BottomNav />
+      {/* <BottomNav /> */}
     </BrowserRouter>
   );
 }

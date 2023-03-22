@@ -53,16 +53,16 @@ function Search() {
       <form className="inline-flex justify-center border border-gray-500 rounded-sm" onSubmit={handleBooking}>
         {/* Search-Input */}
         <input
-          className="outline-none text-xl font-semibold w-72 p-4 rounded-l-sm "
+          className="outline-none text-xl font-semibold w-96 p-4 rounded-l-sm "
           type="search"
           placeholder="Search for hotels or city"
         />
         <VerticalLine />
         {/* DatePicker */}
-        <div className="flex place-items-center">
+        <div className="flex justify-center items-center overflow-hidden">
           <input
             value={`${format(range[0].startDate, 'dd')} ${format(range[0].startDate, 'MMM')} ➔ ${format(range[0].endDate, 'dd')} ${format(range[0].endDate, 'MMM')}`}
-            className="outline-none w-52 text-center text-xl font-semibold  cursor-pointer p-4"
+            className="outline-none w-60 text-center text-xl font-semibold  cursor-pointer p-4"
             readOnly
             placeholder="Date"
             onClick={() => setIsOpen(!isOpen)}
@@ -77,7 +77,7 @@ function Search() {
               minDate={new Date()}
               months={1}
               direction="horizontal"
-              className="absolute mr-3 border border-gray-300"
+              className="absolute border border-gray-300"
               rangeColors={['rgb(239 70 80)']}
             />
             )}
@@ -86,7 +86,7 @@ function Search() {
 
         {/* Room-Guest */}
         <VerticalLine />
-        <button type="button" className="text-xl font-semibold p-4 w-52">Room-Guest</button>
+        <button type="button" className="text-xl bg-white font-semibold p-4 w-60">Room-Guest</button>
         {showModal && (
         <ModalContent
           showModal={showModal}
@@ -94,7 +94,7 @@ function Search() {
         />
         )}
         {/* Search */}
-        <button type="submit" className="bg-green-600 text-xl text-white font-semibold p-4 rounded-r-sm w-36">Search</button>
+        <button type="submit" className="bg-green-600 text-xl text-white font-semibold p-4 rounded-r-sm w-44">Search</button>
       </form>
     </div>
   );
