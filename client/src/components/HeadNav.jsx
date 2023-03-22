@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FiPhoneCall } from 'react-icons/fi';
-import { AiOutlineHome, AiOutlineHeart, AiOutlineShoppingCart } from 'react-icons/ai';
+import { AiOutlineHome, AiOutlineQuestionCircle, AiOutlineShoppingCart } from 'react-icons/ai';
+import { BsBuildings } from 'react-icons/bs';
 import { MdOutlineShoppingBag } from 'react-icons/md';
 import { Link, NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,13 +23,18 @@ function HeadNav(props) {
     },
     {
       name: 'About',
-      icon: <AiOutlineHeart />,
+      icon: <AiOutlineQuestionCircle />,
       href: '/about',
     },
     {
       name: 'Booking',
       icon: <MdOutlineShoppingBag />,
       href: '/booking',
+    },
+    {
+      name: 'Hotels',
+      icon: <BsBuildings />,
+      href: '/hotels',
     },
 
   ]);
@@ -67,9 +73,11 @@ function HeadNav(props) {
           <div className="flex flex-col relative">
             <button
               type="button"
-              className="h-9 w-9 rounded-full ring-0 focus:ring-2 focus:ring-slate-500 bg-slate-200"
+              className="h-9 w-9 font-bold text-xl rounded-full ring-0 focus:ring-2 focus:ring-slate-500 bg-slate-200"
               onClick={toggleUserInfo}
-            />
+            >
+              {user.name.charAt(0)}
+            </button>
 
             {/*  Show UserInfo */}
             {isOpen && (
@@ -91,9 +99,14 @@ function HeadNav(props) {
         )}
 
         {/* Cart */}
-        <button type="button">
-          <AiOutlineShoppingCart className="text-3xl" />
-        </button>
+        <Link
+          className="relative rounded-full h-9 w-9 shadow-md flex flex-col justify-center items-center p-1 border"
+          to="/cart"
+        >
+
+          <AiOutlineShoppingCart className="text-2xl mr-0.5" />
+          <span className="absolute text-center right-0 top-0 h-4 w-4 text-xs bg-red-500 rounded-full shadow-md text-white">0</span>
+        </Link>
       </div>
     </header>
   );

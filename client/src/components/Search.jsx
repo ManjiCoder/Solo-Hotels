@@ -59,7 +59,7 @@ function Search() {
         />
         <VerticalLine />
         {/* DatePicker */}
-        <div className="flex justify-center items-center overflow-hidden">
+        <div className="flex  relative justify-center items-center">
           <input
             value={`${format(range[0].startDate, 'dd')} ${format(range[0].startDate, 'MMM')} ➔ ${format(range[0].endDate, 'dd')} ${format(range[0].endDate, 'MMM')}`}
             className="outline-none w-60 text-center text-xl font-semibold  cursor-pointer p-4"
@@ -67,7 +67,10 @@ function Search() {
             placeholder="Date"
             onClick={() => setIsOpen(!isOpen)}
           />
-          <div ref={refOne}>
+          <div
+            className="absolute top-16"
+            ref={refOne}
+          >
             {isOpen && (
             <DateRange
               onChange={(item) => setRange([item.selection])}
@@ -75,9 +78,9 @@ function Search() {
               moveRangeOnFirstSelection={false}
               ranges={range}
               minDate={new Date()}
-              months={1}
+              months={2}
               direction="horizontal"
-              className="absolute border border-gray-300"
+              className="border border-gray-300 shadow-lg"
               rangeColors={['rgb(239 70 80)']}
             />
             )}
