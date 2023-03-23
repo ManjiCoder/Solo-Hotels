@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-return-assign */
 import { createSlice } from '@reduxjs/toolkit';
 
 const CartSlice = createSlice({
@@ -5,7 +7,9 @@ const CartSlice = createSlice({
   initialState: [],
   reducers: {
     addItemToCart(state, action) {
-      state.push(action.payload);
+      const { updateRoomCount } = action.payload;
+      console.log(updateRoomCount);
+      return state = updateRoomCount;
     },
   },
 });

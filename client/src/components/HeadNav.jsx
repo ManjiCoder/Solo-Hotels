@@ -4,10 +4,13 @@ import PropTypes from 'prop-types';
 import { FiPhoneCall } from 'react-icons/fi';
 import { AiOutlineHome, AiOutlineQuestionCircle, AiOutlineShoppingCart } from 'react-icons/ai';
 import { BsBuildings } from 'react-icons/bs';
+// eslint-disable-next-line no-unused-vars
 import { MdAdminPanelSettings, MdOutlineShoppingBag } from 'react-icons/md';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/slices/userSlice';
+import { closeToast, showToast } from '../store/slices/ToastSlice';
+import Search from './Search';
 
 function HeadNav(props) {
   // eslint-disable-next-line react/prop-types
@@ -45,6 +48,10 @@ function HeadNav(props) {
   };
   const handleSignout = () => {
     dispatch(logout());
+    dispatch(showToast({ success: true, msg: 'logout successfully' }));
+    setTimeout(() => {
+      dispatch(closeToast());
+    }, 1500);
   };
   return (
     <header className="sticky top-0 grid grid-cols-[0.5fr,2fr,1fr] boder border-b-2 bg-slate-50 z-10 border-gray-300 shadow-md items-center px-4">
@@ -52,7 +59,8 @@ function HeadNav(props) {
       <div className="text-2xl text-center font-bold  text-red-600">
         <Link to="/">{mainTitle}</Link>
       </div>
-      <ul className="flex justify-start space-x-7 items-center">
+
+      <ul className={`flex justify-start space-x-7 items-center ${pathname === '/hotels' && 'hidden'}`}>
         {navArr.map(({ name, icon, href }) => (
           <li className="" key={name}>
             <NavLink className={`flex items-center hover:bg-slate-200 p-3 ${pathname === href ? 'bg-slate-200' : ''}`} to={href}>
@@ -61,16 +69,11 @@ function HeadNav(props) {
             </NavLink>
           </li>
         ))}
+      </ul>
 
-        {/* Show Dashboard only if user is admin */}
-        {user && user.role === 'admin' && (
-          <li className="space-x-7">
-            <NavLink className={`flex items-center hover:bg-slate-200 p-3 ${pathname === '/dashboard' ? 'bg-slate-200' : ''}`} to="/dashboard">
-              <MdAdminPanelSettings className="text-2xl mr-3" />
-              Admin
-            </NavLink>
-          </li>
-        )}
+      {/* Show Search only if user visit /hotels page */}
+      <ul className={`${pathname === '/hotels' ? 'flex items-center h-12 scale-[0.7]  transition-all ease-in-out duration-1000' : 'hidden'}`}>
+        <Search />
       </ul>
 
       {/* Actions */}
@@ -105,10 +108,10 @@ function HeadNav(props) {
 
             {/*  Show UserInfo */}
             {isOpen && (
-              <div className="absolute p-3 z-10 rounded-md bg-white shadow-md top-11 -left-20 h-36 w-40 ">
+              <div className="absolute p-3 z-10 rounded-md bg-white shadow-md top-11 -left-20 h-36 w-44 ">
                 <ul className="flex flex-col gap-3 text-gray-700">
                   <li className="text-sm font-semibold">{user.name}</li>
-                  <li className="text-sm ">{user.email}</li>
+                  <li className="text-sm overflow-hidden">{user.email}</li>
                   <li className="text-sm hover:font-semibold">
                     <NavLink to="/account">Setting</NavLink>
                   </li>

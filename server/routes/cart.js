@@ -74,13 +74,13 @@ router.post('/add/:id', fetchUser, async (req, res) => {
 
       //   Updating the cart only if user req the same order with same hotel
       if (updateRoomCount.length !== 0) {
-        const updateCart = await UserCartModel.updateOne({ user: userId }, {
+        await UserCartModel.updateOne({ user: userId }, {
           $set: {
             order: [...isFirstOrder.order], // IMP
           },
         });
         // console.log(isFirstOrder.order);
-        res.json({ msg: 'Item updated to card successfully', updateRoomCount, updateCart });
+        res.json({ msg: 'Item updated to card successfully', updateRoomCount });
       } else {
         //   if user send new hotel req
         const newOrder = await UserCartModel.updateOne({ user: userId }, {

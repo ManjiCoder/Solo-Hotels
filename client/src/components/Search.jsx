@@ -6,11 +6,13 @@ import { addDays, format } from 'date-fns';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css';
+import { useLocation } from 'react-router-dom';
 import ModalContent from './ModalContent';
 import VerticalLine from './VerticalLine';
 
 function Search() {
   const refOne = useRef('');
+  const { pathname } = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -80,7 +82,7 @@ function Search() {
               minDate={new Date()}
               months={2}
               direction="horizontal"
-              className="border border-gray-300 shadow-lg"
+              className={`border border-gray-300 shadow-lg ${pathname === '/hotels' && 'text-base'}`}
               rangeColors={['rgb(239 70 80)']}
             />
             )}

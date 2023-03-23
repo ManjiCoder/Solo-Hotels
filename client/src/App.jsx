@@ -3,43 +3,51 @@ import {
   Routes,
   Route,
 } from 'react-router-dom';
-// import BottomNav from './components/BottomNav';
 import HeadNav from './components/HeadNav';
-import LoginAlert from './components/LoginAlert';
 import Account from './pages/Account';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUp from './pages/Signup';
 import Booking from './pages/Booking';
-import ProtectedRoute from './ProtectedRoute/ProtectedRoute';
+import ProtectedRoute from './Routes/ProtectedRoute';
 import Hotels from './pages/Hotels';
-import IsAdmin from './ProtectedRoute/IsAdmin';
+import IsAdmin from './Routes/IsAdmin';
 import Admin from './pages/Admin';
+import About from './pages/About';
+import Toast from './components/Toast';
+import IsUser from './Routes/IsUser';
 
 function App() {
   const mainTitle = 'SOLO';
-
   return (
     <BrowserRouter>
       <HeadNav mainTitle={mainTitle} />
       <Routes>
         <Route path="/" exact element={<Home />} />
-        <Route path="*" exact element={<LoginAlert />} />
-        <Route path="/login" exact element={<Login mainTitle={mainTitle} />} />
-        <Route path="/signup" exact element={<SignUp mainTitle={mainTitle} />} />
+        <Route path="*" element={<Home />} />
+
+        <Route path="/about" exact element={<About mainTitle={mainTitle} />} />
         <Route path="/hotels" exact element={<Hotels />} />
 
+        {/* Only Logout User can access */}
+        <Route element={<IsUser />}>
+          <Route path="/login" exact element={<Login />} />
+          <Route path="/signup" exact element={<SignUp />} />
+        </Route>
+
+        {/* Only Login User can access */}
         <Route element={<ProtectedRoute />}>
           <Route path="/account" exact element={<Account mainTitle={mainTitle} />} />
           <Route path="/booking" exact element={<Booking />} />
         </Route>
 
+        {/* Only Admin can access */}
         <Route element={<IsAdmin />}>
-          <Route path="/dashboard" element={<Admin />} />
+          <Route path="/dashboard" exact element={<Admin />} />
         </Route>
 
       </Routes>
-      {/* <BottomNav /> */}
+      <Toast />
     </BrowserRouter>
   );
 }

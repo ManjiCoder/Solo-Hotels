@@ -6,8 +6,8 @@ import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Alert from '../components/Alert';
-import { closeAlert, showAlert } from '../store/slices/AlertSlice';
 import { login } from '../store/slices/userSlice';
+import { closeToast, showToast } from '../store/slices/ToastSlice';
 
 // eslint-disable-next-line react/prop-types
 function Login({ mainTitle }) {
@@ -48,9 +48,9 @@ function Login({ mainTitle }) {
       dispatch(login(...data.user));
       navigate('/');
     }
-    dispatch(showAlert({ success: response.ok, msg: data.msg }));
+    dispatch(showToast({ success: response.ok, msg: data.msg }));
     setTimeout(() => {
-      dispatch(closeAlert(null));
+      dispatch(closeToast());
     }, 2000);
   };
 

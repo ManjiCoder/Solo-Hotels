@@ -1,13 +1,12 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { closeAlert, showAlert } from '../store/slices/AlertSlice';
+import { useDispatch } from 'react-redux';
 import { addItemToCart } from '../store/slices/CartSlice';
+import { closeToast, showToast } from '../store/slices/ToastSlice';
 
 function Hotels() {
   const [hotels, setHotels] = useState([]);
   const dispatch = useDispatch();
-  const userCart = useSelector((state) => state.cart);
   // Fetch Hotels
   const getHotels = async () => {
     const response = await fetch('http://localhost:3000/hotel/all?page=1', {
@@ -26,18 +25,34 @@ function Hotels() {
   }, []);
 
   // eslint-disable-next-line consistent-return
-  const handleAddToCart = (item) => {
-    if (userCart.length > 24) {
-      return alert('you');
-    }
-    dispatch(addItemToCart(item));
-    dispatch(showAlert({ success: true, msg: 'Item add to cart successfully' }));
+  const handleAddToCart = async (id) => {
+    dispatch(showToast({ success: true, msg: 'Item add to cart successfully' }));
+
+    const bodyContent = JSON.stringify({
+      from: '16-03-2033',
+      to: '15-04-2023',
+    });
+
+    const response = await fetch(`http://localhost:3000/cart/add/${id}`, {
+      method: 'POST',
+      body: bodyContent,
+      headers: {
+        'auth-token': localStorage.getItem('token'),
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+    console.log(data);
+    if (response.ok) dispatch(addItemToCart(data));
+
     setTimeout(() => {
-      dispatch(closeAlert(null));
-    }, 2000);
+      dispatch(closeToast());
+    }, 1400);
   };
   return (
     <div className="grid lg:grid-cols-4 xl:grid-cols-4 gap-x-5 gap-y-7 p-4 justify-center items-start">
+
       {hotels.map((obj) => (
         <div
           className="max-w-sm h-96 shadow-md bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700"
@@ -63,7 +78,7 @@ function Hotels() {
             <button
               type="button"
               className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              onClick={() => handleAddToCart(obj)}
+              onClick={() => handleAddToCart(obj._id)}
             >
               Add to cart
             </button>
