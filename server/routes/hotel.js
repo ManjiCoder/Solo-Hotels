@@ -39,7 +39,8 @@ router.get('/all', fetchUser, async (req, res) => {
       .limit(limit)
       .sort({ hotel_star_rating: -1 });
     // console.log(rooms.length);
-    res.json({ rooms, nbHits: rooms.length });
+    // res.json({ rooms, nbHits: rooms.length });
+    res.json(rooms);
   } catch (error) {
     console.log(error.message);
     res.status(500).send('Some Error Occured');
