@@ -9,7 +9,7 @@ import { MdAdminPanelSettings, MdOutlineShoppingBag } from 'react-icons/md';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/slices/userSlice';
-import { closeToast, showToast } from '../store/slices/ToastSlice';
+import { showToastFn } from '../store/slices/ToastSlice';
 import Search from './Search';
 
 function HeadNav(props) {
@@ -48,10 +48,7 @@ function HeadNav(props) {
   };
   const handleSignout = () => {
     dispatch(logout());
-    dispatch(showToast({ success: true, msg: 'logout successfully' }));
-    setTimeout(() => {
-      dispatch(closeToast());
-    }, 1500);
+    dispatch(showToastFn(true, 'logout successfully'));
   };
   return (
     <header className="sticky top-0 grid grid-cols-[0.5fr,2fr,1fr] boder border-b-2 bg-slate-50 z-10 border-gray-300 shadow-md items-center px-4">

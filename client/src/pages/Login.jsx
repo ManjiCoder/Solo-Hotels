@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Alert from '../components/Alert';
 import { login } from '../store/slices/userSlice';
-import { closeToast, showToast } from '../store/slices/ToastSlice';
+import { showToastFn } from '../store/slices/ToastSlice';
 
 // eslint-disable-next-line react/prop-types
 function Login({ mainTitle }) {
@@ -48,10 +48,7 @@ function Login({ mainTitle }) {
       dispatch(login(...data.user));
       navigate('/');
     }
-    dispatch(showToast({ success: response.ok, msg: data.msg }));
-    setTimeout(() => {
-      dispatch(closeToast());
-    }, 2000);
+    dispatch(showToastFn(response.ok, data.msg));
   };
 
   return (

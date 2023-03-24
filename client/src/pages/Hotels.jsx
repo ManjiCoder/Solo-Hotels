@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addItemToCart } from '../store/slices/CartSlice';
-import { closeToast, showToast } from '../store/slices/ToastSlice';
+import { showToastFn } from '../store/slices/ToastSlice';
 
 function Hotels() {
   const [hotels, setHotels] = useState([]);
@@ -26,8 +26,6 @@ function Hotels() {
 
   // eslint-disable-next-line consistent-return
   const handleAddToCart = async (id) => {
-    dispatch(showToast({ success: true, msg: 'Item add to cart successfully' }));
-
     const bodyContent = JSON.stringify({
       from: '16-03-2033',
       to: '15-04-2023',
@@ -46,9 +44,7 @@ function Hotels() {
     console.log(data);
     if (response.ok) dispatch(addItemToCart(data));
 
-    setTimeout(() => {
-      dispatch(closeToast());
-    }, 1400);
+    dispatch(showToastFn(response.ok, data.msg));
   };
   return (
     <div className="grid lg:grid-cols-4 xl:grid-cols-4 gap-x-5 gap-y-7 p-4 justify-center items-start">

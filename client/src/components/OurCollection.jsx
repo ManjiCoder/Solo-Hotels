@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
 
 function OurCollection() {
@@ -39,7 +40,7 @@ function OurCollection() {
       <h1 className="font-bold text-xl my-4">Our collections</h1>
       <section className="flex space-x-3 overflow-y-scroll hideScroll">
         {hotels.map((obj) => (
-          <main className="text-sm w-36 " key={obj.id}>
+          <main className="text-sm w-36 " key={obj._id}>
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWaJtsXaL7tgfbS4pikSnQxJMdzk_LfqMSIg&usqp=CAU" className="h-32 w-28 rounded-md" alt="" />
             <div className="w-28">
               <h5 className="font-bold">{obj.property_name}</h5>
