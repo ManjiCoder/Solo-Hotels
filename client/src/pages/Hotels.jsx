@@ -2,22 +2,25 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addItemToCart } from '../store/slices/CartSlice';
+import { showAlertFn } from '../store/slices/AlertSlice';
 import { showToastFn } from '../store/slices/ToastSlice';
 
 function Hotels() {
   const [hotels, setHotels] = useState([]);
   const dispatch = useDispatch();
+
   // Fetch Hotels
   const getHotels = async () => {
-    const response = await fetch('http://localhost:3000/hotel/all?page=1', {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}hotel/all?page=1`, {
       method: 'GET',
       headers: {
         'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQwZGJlNTdkMGY5NzI0MzcxMDQxYjk0In0sImlhdCI6MTY3ODYzOTAyN30.sApsQJZC5mKB9_Ol9__a15ogOG6Osgv__hYTaN8SegA',
       },
     });
-
+    if (response.status === 500) dispatch(showAlertFn(false, 'Server is down', true));
     const data = await response.json();
-    console.log(data);
+
+    if (!response.ok) dispatch(showToastFn(response.ok, data.msg, 3000));
     setHotels(hotels.concat(data));
   };
   useEffect(() => {

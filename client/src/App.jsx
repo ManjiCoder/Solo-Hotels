@@ -16,12 +16,14 @@ import Admin from './pages/Admin';
 import About from './pages/About';
 import Toast from './components/Toast';
 import IsUser from './Routes/IsUser';
+import Alert from './components/Alert';
 
 function App() {
   const mainTitle = 'SOLO';
   return (
     <BrowserRouter>
       <HeadNav mainTitle={mainTitle} />
+      <Alert />
       <Routes>
         <Route path="/" exact element={<Home />} />
         <Route path="*" element={<Home />} />

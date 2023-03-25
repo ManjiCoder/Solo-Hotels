@@ -8,15 +8,15 @@ import { closeAlert } from '../store/slices/AlertSlice';
 function Alert() {
   const dispatch = useDispatch();
   const alertState = useSelector((state) => state.alerts);
-  console.log(alertState);
+
   const handleCloseAlert = () => {
     dispatch(closeAlert(null));
   };
 
   return (
-    <div className="absolute top-14 w-full h-14">
+    <div className="absolute top-12 w-full h-14">
 
-      {alertState != null && (
+      {alertState && (
       <div className="flex flex-col z-10 bg-white shadow-md border ">
 
         <p className={`flex justify-between w-full p-3 text-xl text-left font-semibold ${alertState.success ? '' : 'text-red-500'}`}>

@@ -9,15 +9,20 @@ const AlertSlice = createSlice({
   name: 'alerts',
   initialState: null,
   reducers: {
-    showAlert(state, action) {
-      const { success, msg } = action.payload;
-      return state = { success, msg };
+    setAlert(state, action) {
+      return state = action.payload;
     },
     closeAlert(state, action) {
-      return state = action.payload;
+      return state = null;
     },
   },
 });
 
-export const { showAlert, closeAlert } = AlertSlice.actions;
+export const { setAlert, closeAlert } = AlertSlice.actions;
 export default AlertSlice.reducer;
+
+export function showAlertFn(type, msg, timeInfinite) {
+  return async function showAlert(dispatch, getState) {
+    dispatch(setAlert({ success: type, msg }));
+  };
+}

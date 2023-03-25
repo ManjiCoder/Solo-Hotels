@@ -1,27 +1,15 @@
 import React, { useEffect } from 'react';
 import { MdNearMe } from 'react-icons/md';
-import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { updateCities } from '../store/slices/CitiesSlice';
+import { getCity } from '../store/slices/CitiesSlice';
 
 function ExploreCities() {
   const dispatch = useDispatch();
   const allCities = useSelector((state) => state.cities);
 
-  const getCity = async () => {
-    // console.log(allCities);
-    // TODO: Use RTK or React Query => Caching needed
-    const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_BASE_URL}hotel/cities`, {
-      method: 'GET',
-      headers: {
-        'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQwZGJlNTdkMGY5NzI0MzcxMDQxYjk0In0sImlhdCI6MTY3ODYzOTAyN30.sApsQJZC5mKB9_Ol9__a15ogOG6Osgv__hYTaN8SegA',
-      },
-    });
-    dispatch(updateCities(data));
-  };
   useEffect(() => {
-    getCity();
+    dispatch(getCity());
   }, []);
 
   return (
