@@ -21,8 +21,11 @@ const AlertSlice = createSlice({
 export const { setAlert, closeAlert } = AlertSlice.actions;
 export default AlertSlice.reducer;
 
-export function showAlertFn(type, msg, timeInfinite) {
+export function showAlertFn(type, msg, isInfinite) {
   return async function showAlert(dispatch, getState) {
     dispatch(setAlert({ success: type, msg }));
+    if (!isInfinite) {
+      dispatch(closeAlert());
+    }
   };
 }

@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Alert from '../components/Alert';
 import { login } from '../store/slices/userSlice';
 import { showToastFn } from '../store/slices/ToastSlice';
+import { showAlertFn } from '../store/slices/AlertSlice';
 
 // eslint-disable-next-line react/prop-types
 function Login({ mainTitle }) {
@@ -31,24 +32,30 @@ function Login({ mainTitle }) {
   };
   const handleLogin = async (e) => {
     e.preventDefault();
+    let response;
 
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}auth/login`, {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    try {
+      response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}auth/login`, {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    const data = await response.json();
-    // console.log(data);
-    if (response.ok) {
-      localStorage.setItem('token', data.authToken);
-      localStorage.setItem('user', JSON.stringify(...data.user));
-      dispatch(login(...data.user));
-      navigate('/');
+      const data = await response.json();
+      // console.log(data);
+      if (response.ok) {
+        localStorage.setItem('token', data.authToken);
+        localStorage.setItem('user', JSON.stringify(...data.user));
+        dispatch(login(...data.user));
+        navigate('/');
+      }
+      dispatch(showToastFn(response.ok, data.msg));
+    } catch (error) {
+      dispatch(showAlertFn(false, response.statusText, true));
+      console.log({ error }, response.statusText);
     }
-    dispatch(showToastFn(response.ok, data.msg));
   };
 
   return (

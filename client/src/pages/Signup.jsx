@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import Alert from '../components/Alert';
 import { signup } from '../store/slices/userSlice';
 import { showToastFn } from '../store/slices/ToastSlice';
+import { showAlertFn } from '../store/slices/AlertSlice';
 
 // eslint-disable-next-line react/prop-types
 function Signup({ mainTitle }) {
@@ -32,24 +33,29 @@ function Signup({ mainTitle }) {
   };
   const handleSignup = async (e) => {
     e.preventDefault();
+    let response;
+    try {
+      response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}auth/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
 
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}auth/signup`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name, email, password }),
-    });
-
-    const data = await response.json();
-    // console.log(data);
-    if (response.ok) {
-      localStorage.setItem('token', data.authToken);
-      localStorage.setItem('user', JSON.stringify(...data.user));
-      dispatch(signup(...data.user));
-      navigate('/');
+      const data = await response.json();
+      // console.log(data);
+      if (response.ok) {
+        localStorage.setItem('token', data.authToken);
+        localStorage.setItem('user', JSON.stringify(...data.user));
+        dispatch(signup(...data.user));
+        navigate('/');
+      }
+      dispatch(showToastFn(response.ok, data.msg));
+    } catch (error) {
+      dispatch(showAlertFn(false, response.statusText, true));
+      console.log({ error }, response.statusText);
     }
-    dispatch(showToastFn(response.ok, data.msg));
   };
   return (
     <div className="p-3 bg-slate-50 min-h-screen flex flex-col justify-center items-center">

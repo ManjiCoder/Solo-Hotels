@@ -17,6 +17,7 @@ import About from './pages/About';
 import Toast from './components/Toast';
 import IsUser from './Routes/IsUser';
 import Alert from './components/Alert';
+import Hotel from './pages/Hotel';
 
 function App() {
   const mainTitle = 'SOLO';
@@ -30,6 +31,7 @@ function App() {
 
         <Route path="/about" exact element={<About mainTitle={mainTitle} />} />
         <Route path="/hotels" exact element={<Hotels />} />
+        <Route path="/hotel/:id" exact element={<Hotel />} />
 
         {/* Only Logout User can access */}
         <Route element={<IsUser />}>
