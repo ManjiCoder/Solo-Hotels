@@ -17,7 +17,7 @@ function HeadNav(props) {
   const { mainTitle } = props;
   const { pathname } = useLocation();
   const user = useSelector((state) => state.user);
-  const userCart = useSelector((state) => state.cart);
+  const { userCart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const navArr = Object.freeze([
@@ -74,7 +74,7 @@ function HeadNav(props) {
       </ul>
 
       {/* Actions */}
-      <div className="flex justify-center items-center place-self-end self-center space-x-4">
+      <div className="flex justify-center items-center place-self-end self-center space-x-3 md:-ml-5">
         {/* Login / Signup */}
         {!user && (
           <div className="flex place-items-center space-x-4">
@@ -129,7 +129,9 @@ function HeadNav(props) {
         >
 
           <AiOutlineShoppingCart className="text-2xl mr-0.5" />
-          <span className="absolute text-center right-0 top-0 h-4 w-4 text-xs bg-red-500 rounded-full shadow-md text-white">{userCart.length}</span>
+          <span className="absolute text-center right-0 top-0 h-4 w-4 text-xs bg-red-500 rounded-full shadow-md text-white">
+            {userCart !== undefined ? userCart.orderCount : 0}
+          </span>
         </Link>
       </div>
     </header>

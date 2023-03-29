@@ -7,7 +7,7 @@ import { getCity } from '../store/slices/CitiesSlice';
 function ExploreCities() {
   const dispatch = useDispatch();
   const allCities = useSelector((state) => state.cities);
-  console.log(allCities);
+
   useEffect(() => {
     dispatch(getCity());
   }, []);

@@ -16,14 +16,14 @@ router.get('/all', fetchUser, async (req, res) => {
   try {
     // find ther user & show thier own cart items
     const user = req.user.id;
-    const carts = await UserCartModel.findOne({ user }, { user: 1, order: 1 }).sort({ date: -1 });
+    const carts = await UserCartModel.findOne({ user }, { user: 1, order: 1, orderCount: 1 }).sort({ date: -1 });
     if (!carts) return res.status(400).json({ msg: 'Your cart is empty' });
     const loginUser = await UserModel.findById(user, { name: 1, role: 1 });
     // console.log(carts);
 
     // Fetching Hotels Details
     const hotels = carts.order.map((obj) => HotelModel.findById(obj.hotel, {
-      property_name: 1, property_type: 1, state: 1,
+      property_name: 1, property_type: 1, room_type: 1, state: 1,
     }));
 
     // Logic For replacing userId with UserModel & hotelId with HotelModel
@@ -34,6 +34,7 @@ router.get('/all', fetchUser, async (req, res) => {
         carts.order.forEach((obj, i) => {
           const updateHotel = {};
           updateHotel.hotel = hotelDetails[i];
+          updateHotel.room_type = obj.room_type;
           updateHotel.roomCount = obj.roomCount;
           updateHotel.from = obj.from;
           updateHotel.to = obj.to;
@@ -77,10 +78,11 @@ router.post('/add/:id', fetchUser, async (req, res) => {
         await UserCartModel.updateOne({ user: userId }, {
           $set: {
             order: [...isFirstOrder.order], // IMP
+            orderCount: isFirstOrder.order.length,
           },
         });
         // console.log(isFirstOrder.order);
-        res.json({ msg: 'Item updated to card successfully', updateRoomCount });
+        res.json({ msg: 'Item updated to card successfully', order: updateRoomCount, orderCount: isFirstOrder.orderCount });
       } else {
         //   if user send new hotel req
         const newOrder = await UserCartModel.updateOne({ user: userId }, {
@@ -90,7 +92,14 @@ router.post('/add/:id', fetchUser, async (req, res) => {
             },
           },
         });
-        res.json({ msg: newOrder.modifiedCount === 1 ? 'New order added to card successfully' : 'New order added to card unsuccessfully', newOrder });
+        if (newOrder.modifiedCount) {
+          await UserCartModel.updateOne({ user: userId }, {
+            $set: {
+              orderCount: isFirstOrder.order.length + 1,
+            },
+          });
+        }
+        res.json({ msg: newOrder.modifiedCount === 1 ? 'New order added to card successfully' : 'New order added to card unsuccessfully', order: newOrder, orderCount: isFirstOrder.orderCount });
       }
     } else {
       // If Order Of User Is First Order, So Set roomCount to 1
@@ -180,7 +189,12 @@ router.put('/remove-order/:id', fetchUser, async (req, res) => {
     // if req.params.id not found in db
     if (newOrder.length === 0) return res.status(400).json({ msg: 'Not allowed' });
     // const updateOrder = await UserCartModel.findByIdAndUpdate(req.params.id, { $set: { order: newOrder } });
-    const updateOrder = await UserCartModel.updateOne({ user }, { $set: { order: newOrder } });
+    const updateOrder = await UserCartModel.updateOne({ user }, {
+      $set: {
+        order: newOrder,
+        orderCount: isOrder - 1,
+      },
+    });
     const restOrder = await UserCartModel.findOne({ user });
     res.json({ msg: updateOrder.modifiedCount === 1 ? 'Item remove successfully' : 'Item remove unsuccessfully', Order: restOrder.order });
   } catch (error) {

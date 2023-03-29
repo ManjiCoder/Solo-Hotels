@@ -15,8 +15,7 @@ function Alert() {
   };
 
   return (
-    <div className="absolute top-12 w-full h-14">
-
+    <div className={`${alertState ? 'absolute top-12 w-full h-14' : 'hidden'}`}>
       {alertState && (
       <div className="flex flex-col z-10 bg-white shadow-md border ">
         <div className="flex items-center mx-7">

@@ -11,14 +11,14 @@ const UserCartSchema = new Schema({
     type: Array,
     default: [],
   },
+  orderCount: {
+    type: Number,
+    default: 1,
+  },
   date: {
     type: Date,
     default: Date.now,
   },
-  // hotels: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'hotel',
-  // },
 });
 
 const UserCartModel = mongoose.model('cart', UserCartSchema);
