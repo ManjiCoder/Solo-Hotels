@@ -7,18 +7,24 @@ import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import ModalContent from './ModalContent';
 import VerticalLine from './VerticalLine';
 
 function Search() {
+  const allCities = useSelector((state) => state.cities);
   const refOne = useRef('');
   const { pathname } = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showOption, setShowOption] = useState(false);
+  const [search, setSearch] = useState('');
+  const [showCity, setShowCity] = useState([]);
 
   function closeModal() {
     setShowModal(false);
   }
+
   const [range, setRange] = useState([
     {
       startDate: new Date(),
@@ -26,6 +32,7 @@ function Search() {
       key: 'selection',
     },
   ]);
+
   const hideOnClickOutside = (e) => {
     if (refOne.current && !refOne.current.contains(e.target)) {
       setIsOpen(false);
@@ -36,6 +43,23 @@ function Search() {
     // console.log(e.key);
     if (e.key === 'Escape') setIsOpen(false);
   };
+
+  const handleChange = async (e) => {
+    setSearch(e.target.value);
+    const matchCity = [];
+    setShowOption(true);
+    // eslint-disable-next-line array-callback-return
+    allCities.map((obj) => {
+      const { city, state, country } = obj;
+      const str = `${city}, ${state}, ${country}`;
+      if (str.toLowerCase().includes(e.target.value.toLowerCase())) {
+        matchCity.push(obj);
+        // console.log(str);
+      }
+    });
+    setShowCity(matchCity);
+  };
+
   useEffect(() => {
     document.addEventListener('click', hideOnClickOutside, true);
     document.addEventListener('keydown', hideOnEscape, true);
@@ -44,24 +68,52 @@ function Search() {
   const handleBooking = (e) => {
     e.preventDefault();
     const payload = {
-      hotel: 'oyo',
-      from: format(range[0].startDate, 'MM/dd/yyyy'),
-      to: format(range[0].endDate, 'MM/dd/yyyy'),
+      hotel: search,
+      from: format(range[0].startDate, 'dd/MM/yyyy'),
+      to: format(range[0].endDate, 'dd/MM/yyyy'),
     };
     console.log(payload);
   };
   return (
     <div className="flex justify-center">
-      <form className="inline-flex justify-center border border-gray-500 rounded-sm" onSubmit={handleBooking}>
+      <form
+        className="inline-flex justify-center border border-gray-500 rounded-sm"
+        onSubmit={handleBooking}
+      >
         {/* Search-Input */}
-        <input
-          className="outline-none text-xl font-semibold w-96 p-4 rounded-l-sm "
-          type="search"
-          placeholder="Search for hotels or city"
-        />
+        <section className="relative">
+          <input
+            className="capitalize outline-none text-xl font-semibold w-96 p-4 rounded-l-sm "
+            type="search"
+            placeholder="Search for hotels or city"
+            onChange={handleChange}
+            value={search}
+          />
+          <div
+            className={`absolute w-full z-10 bg-white ${showOption && search.length > 0 && showCity.length > 0 ? 'flex flex-col gap-3 p-4 transition-all' : 'hidden'} max-h-60 shadow-md border-t ${showCity.length > 4 ? 'overflow-y-scroll' : 'overflow-hidden'}`}
+          >
+            {search.length > 0 && showCity.length > 0 && showCity.map(({ city, state, country }) => {
+              const cityStr = `${city}, ${state}, ${country.toLowerCase()}`;
+              return (
+                <button
+                  type="button"
+                  className="w-full text-left text-[1.1rem] font-semibold capitalize"
+                  key={city}
+                  onClick={() => {
+                    setSearch(cityStr);
+                    setShowOption(false);
+                  }}
+                >
+                  {cityStr.length > 34 ? `${cityStr.slice(0, 34)}...` : cityStr}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
         <VerticalLine />
         {/* DatePicker */}
-        <div className="flex  relative justify-center items-center">
+        <div className="flex  relative z-10 justify-center items-center">
           <input
             value={`${format(range[0].startDate, 'dd')} ${format(range[0].startDate, 'MMM')} ➔ ${format(range[0].endDate, 'dd')} ${format(range[0].endDate, 'MMM')}`}
             className="outline-none w-60 text-center text-xl font-semibold  cursor-pointer p-4"
@@ -69,10 +121,7 @@ function Search() {
             placeholder="Date"
             onClick={() => setIsOpen(!isOpen)}
           />
-          <div
-            className="absolute top-16"
-            ref={refOne}
-          >
+          <div className="absolute top-16" ref={refOne}>
             {isOpen && (
             <DateRange
               onChange={(item) => setRange([item.selection])}
@@ -91,15 +140,22 @@ function Search() {
 
         {/* Room-Guest */}
         <VerticalLine />
-        <button type="button" className="text-xl bg-white font-semibold p-4 w-60">Room-Guest</button>
+        <button
+          type="button"
+          className="text-xl bg-white font-semibold p-4 w-60"
+        >
+          Room-Guest
+        </button>
         {showModal && (
-        <ModalContent
-          showModal={showModal}
-          closeModal={closeModal}
-        />
+        <ModalContent showModal={showModal} closeModal={closeModal} />
         )}
         {/* Search */}
-        <button type="submit" className="bg-green-600 text-xl text-white font-semibold p-4 rounded-r-sm w-44">Search</button>
+        <button
+          type="submit"
+          className="bg-green-600 text-xl text-white font-semibold p-4 rounded-r-sm w-44"
+        >
+          Search
+        </button>
       </form>
     </div>
   );

@@ -1,16 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { MdNearMe } from 'react-icons/md';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getCity } from '../store/slices/CitiesSlice';
 
 function ExploreCities() {
-  const dispatch = useDispatch();
   const allCities = useSelector((state) => state.cities);
-
-  useEffect(() => {
-    dispatch(getCity());
-  }, []);
 
   return (
     <div className="px-4">
@@ -26,15 +20,15 @@ function ExploreCities() {
           <span className="text-xs font-semibold">Near Me</span>
         </div>
 
-        {allCities.length > 0 && allCities.slice(0, 51).map((item) => (
-          <div className="text-center capitalize" key={item}>
+        { allCities.length > 0 && allCities.slice(0, 51).map(({ city }) => (
+          <div className="text-center capitalize" key={city}>
             <Link
               className="text-2xl cursor-pointer font-semibold bg-blue-600 text-white w-24 h-16 flex items-center justify-center rounded-md"
               to="/cities"
             >
-              <button type="button">{item === 'near me' ? <MdNearMe /> : item[0]}</button>
+              <button type="button">{city === 'near me' ? <MdNearMe /> : city[0]}</button>
             </Link>
-            <span className="text-xs font-semibold">{item}</span>
+            <span className="text-xs font-semibold">{city}</span>
           </div>
         ))}
 

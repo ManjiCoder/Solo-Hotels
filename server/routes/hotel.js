@@ -74,15 +74,20 @@ router.get('/', fetchUser, async (req, res) => {
 router.get('/cities', fetchUser, async (req, res) => {
   try {
     const rooms = await HotelModel
-      .find({}, { city: 1, _id: 0 })
-      .sort({ hotel_star_rating: 1 });
-    // eslint-disable-next-line prefer-const
-    let sets = new Set();
-    rooms.map((item) => {
-      sets.add(item.city);
+      .find({}, {
+        city: 1, _id: 0, state: 1, country: 1,
+      })
+      .sort({ city: 1 });
+    const allCities = new Set();
+    const filterCities = [];
+    rooms.map((obj) => {
+      const { city } = obj;
+      if (!allCities.has(city)) {
+        allCities.add(city);
+        filterCities.push(obj);
+      }
     });
-    // console.log(rooms);
-    res.json(Array.from(sets));
+    res.json(filterCities);
   } catch (error) {
     console.log(error.message);
     res.status(500).send('Some Error Occured');

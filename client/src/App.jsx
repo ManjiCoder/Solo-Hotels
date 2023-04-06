@@ -23,6 +23,7 @@ import Hotel from './pages/Hotel';
 import Cities from './pages/Cities';
 import Cart from './pages/Cart';
 import { getCartItemFn } from './store/slices/CartSlice';
+import { getCityFn } from './store/slices/CitiesSlice';
 
 function App() {
   const mainTitle = 'SOLO';
@@ -31,6 +32,7 @@ function App() {
     if (localStorage.getItem('token')) {
       dispatch(getCartItemFn());
     }
+    dispatch(getCityFn());
   }, []);
 
   return (

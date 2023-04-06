@@ -19,7 +19,7 @@ export const { setCities } = citiesSlice.actions;
 export default citiesSlice.reducer;
 
 // Async
-export function getCity() {
+export function getCityFn() {
   return async function getCities(dispatch) {
     let response;
     try {
