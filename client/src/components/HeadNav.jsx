@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/slices/userSlice';
 import { showToastFn } from '../store/slices/ToastSlice';
 import Search from './Search';
+import { setCart } from '../store/slices/CartSlice';
 
 function HeadNav(props) {
   // eslint-disable-next-line react/prop-types
@@ -49,6 +50,7 @@ function HeadNav(props) {
   const handleSignout = () => {
     dispatch(logout());
     dispatch(showToastFn(true, 'logout successfully'));
+    dispatch(setCart({ orderCount: 0 }));
   };
   return (
     <header className="sticky top-0 grid grid-cols-[0.5fr,2fr,1fr] boder border-b-2 bg-slate-50 z-10 border-gray-300 shadow-md items-center px-4">

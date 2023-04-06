@@ -1,11 +1,11 @@
 /* eslint-disable consistent-return */
 /* eslint-disable camelcase */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { MdAddCircle, MdRemoveCircle, MdDeleteForever } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  addRoom, deleteOrder, getCartItemFn, removeRoom,
+  addRoom, deleteOrder, removeRoom,
 } from '../store/slices/CartSlice';
 import { showToastFn } from '../store/slices/ToastSlice';
 import BackButton from '../components/BackButton';
@@ -31,10 +31,6 @@ function Cart() {
     dispatch(deleteOrder(index));
     dispatch(showToastFn(true, 'Item remove successfully'));
   };
-
-  useEffect(() => {
-    dispatch(getCartItemFn());
-  }, []);
 
   return (
     <>

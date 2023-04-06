@@ -28,7 +28,9 @@ function App() {
   const mainTitle = 'SOLO';
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getCartItemFn());
+    if (localStorage.getItem('token')) {
+      dispatch(getCartItemFn());
+    }
   }, []);
 
   return (

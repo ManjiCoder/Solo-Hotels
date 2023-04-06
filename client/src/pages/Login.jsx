@@ -9,6 +9,7 @@ import Alert from '../components/Alert';
 import { login } from '../store/slices/userSlice';
 import { showToastFn } from '../store/slices/ToastSlice';
 import { showAlertFn } from '../store/slices/AlertSlice';
+import { getCartItemFn } from '../store/slices/CartSlice';
 
 // eslint-disable-next-line react/prop-types
 function Login({ mainTitle }) {
@@ -49,6 +50,7 @@ function Login({ mainTitle }) {
         localStorage.setItem('token', data.authToken);
         localStorage.setItem('user', JSON.stringify(...data.user));
         dispatch(login(...data.user));
+        dispatch(getCartItemFn());
         navigate('/');
       }
       dispatch(showToastFn(response.ok, data.msg));
