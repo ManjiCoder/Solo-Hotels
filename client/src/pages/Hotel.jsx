@@ -8,6 +8,7 @@ import { showAlertFn } from '../store/slices/AlertSlice';
 
 function Hotel() {
   const { state } = useLocation();
+  console.log(state);
   const dispatch = useDispatch();
 
   const {

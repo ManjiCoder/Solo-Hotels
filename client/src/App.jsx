@@ -45,7 +45,8 @@ function App() {
 
         <Route path="/about" exact element={<About mainTitle={mainTitle} />} />
         <Route path="/hotels" exact element={<Hotels />} />
-        <Route path="/cities" exact element={<Cities />} />
+        <Route path="/cities/:cityName" exact element={<Cities />} />
+        <Route path="/hotel/:id" exact element={<Hotel />} />
 
         {/* Only Logout User can access */}
         <Route element={<IsUser />}>
@@ -55,7 +56,6 @@ function App() {
 
         {/* Only Login User can access */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/hotel/:id" exact element={<Hotel />} />
           <Route path="/account" exact element={<Account mainTitle={mainTitle} />} />
           <Route path="/booking" exact element={<Booking />} />
           <Route path="/cart" exact element={<Cart />} />

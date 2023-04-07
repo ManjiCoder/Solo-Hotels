@@ -97,7 +97,7 @@ function Search() {
               return (
                 <button
                   type="button"
-                  className="w-full text-left text-[1.1rem] font-semibold capitalize"
+                  className="w-full text-left text-xl font-semibold capitalize"
                   key={city}
                   onClick={() => {
                     setSearch(cityStr);

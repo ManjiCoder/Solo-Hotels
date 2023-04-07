@@ -1,5 +1,5 @@
 import React from 'react';
-import { MdArrowCircleLeft } from 'react-icons/md';
+import { BsFillArrowLeftCircleFill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 
 function BackButton() {
@@ -10,10 +10,10 @@ function BackButton() {
     >
       <button
         type="button"
-        className="text-3xl cursor-pointer"
+        className="text-4xl cursor-pointer"
         onClick={() => navigate(-1)}
       >
-        <MdArrowCircleLeft />
+        <BsFillArrowLeftCircleFill />
       </button>
     </div>
   );

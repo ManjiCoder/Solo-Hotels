@@ -50,8 +50,8 @@ function Login({ mainTitle }) {
         localStorage.setItem('token', data.authToken);
         localStorage.setItem('user', JSON.stringify(...data.user));
         dispatch(login(...data.user));
-        dispatch(getCartItemFn());
-        navigate('/');
+        await dispatch(getCartItemFn());
+        navigate(-1);
       }
       dispatch(showToastFn(response.ok, data.msg));
     } catch (error) {

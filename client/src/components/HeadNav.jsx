@@ -6,7 +6,9 @@ import { AiOutlineHome, AiOutlineQuestionCircle, AiOutlineShoppingCart } from 'r
 import { BsBuildings } from 'react-icons/bs';
 // eslint-disable-next-line no-unused-vars
 import { MdAdminPanelSettings, MdOutlineShoppingBag } from 'react-icons/md';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import {
+  Link, NavLink, useLocation,
+} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/slices/userSlice';
 import { showToastFn } from '../store/slices/ToastSlice';
@@ -17,6 +19,7 @@ function HeadNav(props) {
   // eslint-disable-next-line react/prop-types
   const { mainTitle } = props;
   const { pathname } = useLocation();
+
   const user = useSelector((state) => state.user);
   const { userCart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();

@@ -13,7 +13,7 @@ import BackButton from '../components/BackButton';
 function Cart() {
   const dispatch = useDispatch();
   const { userCart } = useSelector((state) => state.cart);
-  // console.log(userCart);
+  console.log(userCart);
 
   const handleRemoveRoom = (index) => {
     const { roomCount } = userCart.order[index];

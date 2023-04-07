@@ -5,18 +5,17 @@ import { Link } from 'react-router-dom';
 
 function ExploreCities() {
   const allCities = useSelector((state) => state.cities);
-
   return (
     <div className="px-4">
       <h2 className="font-bold text-xl my-4">Explore your next destination</h2>
       <section className="flex gap-3 overflow-y-scroll scroll-smooth hideScroll">
         <div className="text-center capitalize">
-          <Link
+          <button
+            type="button"
             className="text-2xl cursor-pointer font-semibold bg-blue-600 text-white w-24 h-16 flex items-center justify-center rounded-md"
-            to="/cities"
           >
             N
-          </Link>
+          </button>
           <span className="text-xs font-semibold">Near Me</span>
         </div>
 
@@ -24,7 +23,7 @@ function ExploreCities() {
           <div className="text-center capitalize" key={city}>
             <Link
               className="text-2xl cursor-pointer font-semibold bg-blue-600 text-white w-24 h-16 flex items-center justify-center rounded-md"
-              to="/cities"
+              to={`/cities/${city}`}
             >
               <button type="button">{city === 'near me' ? <MdNearMe /> : city[0]}</button>
             </Link>
