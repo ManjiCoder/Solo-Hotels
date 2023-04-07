@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MdOutlineStarPurple500 } from 'react-icons/md';
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -8,8 +8,8 @@ import { showAlertFn } from '../store/slices/AlertSlice';
 
 function Hotel() {
   const { state } = useLocation();
-  console.log(state);
   const dispatch = useDispatch();
+  const [isShowMore, setIsShowMore] = useState(false);
 
   const {
     _id,
@@ -37,35 +37,38 @@ function Hotel() {
     img,
   } = state;
 
-  console.log(
-    {
-      _id,
-      address,
-      area,
-      city,
-      country,
-      crawl_date,
-      hotel_description,
-      hotel_facilities,
-      hotel_star_rating,
-      landmark,
-      latitude,
-      longitude,
-      qts,
-      property_id,
-      property_name,
-      property_type,
-      province,
-      room_count,
-      room_facilities,
-      room_type,
-      hotelState,
-      img,
-    },
-  );
+  // console.log(
+  //   {
+  //     _id,
+  //     address,
+  //     area,
+  //     city,
+  //     country,
+  //     crawl_date,
+  //     hotel_description,
+  //     hotel_facilities,
+  //     hotel_star_rating,
+  //     landmark,
+  //     latitude,
+  //     longitude,
+  //     qts,
+  //     property_id,
+  //     property_name,
+  //     property_type,
+  //     province,
+  //     room_count,
+  //     room_facilities,
+  //     room_type,
+  //     hotelState,
+  //     img,
+  //   },
+  // );
 
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
-    if (!state) dispatch(showAlertFn(false, 'Not Allowed', true));
+    if (!state) return dispatch(showAlertFn(false, 'Not Allowed', true));
+    const arr = hotel_facilities.split(':');
+    console.log(arr);
   }, []);
 
   return (
@@ -88,8 +91,8 @@ function Hotel() {
             src={img}
             alt=""
           />
-          <div className="p-5">
-            <h5 className="mb-2 gap-3 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+          <div className="p-5 flex flex-col gap-3">
+            <h2 className="mb-2 gap-3 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
               {property_name}
               {' '}
               -
@@ -97,43 +100,71 @@ function Hotel() {
               <span className="mr-3 text-sm font-bold bg-gradient-to-l from-[#df293a] to-[#d11450] text-white p-2 shadow-md rounded-md">
                 {room_type}
               </span>
-            </h5>
-            <h2 className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-              {address}
             </h2>
-            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-              {hotelState}
+            <p className="">
+              <strong className="not-italic mr-2 font-bold">
+                Room
+                {' '}
+                {room_count > 0 ? 'Avaiable' : ''}
+                {' '}
+                -
+              </strong>
+              <span className={`${room_count === '0' ? 'text-red-500 font-semibold' : 'rounded-full bg-gradient-to-l from-[#df293a] to-[#d11450] px-2.5 py-2 mx-auto text-white font-bold'}`}>{room_count > 0 ? room_count : 'Out of stock'}</span>
             </p>
-            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 text-ellipsis">
-              {hotel_description}
+
+            <address className="capitalize text-gray-700 dark:text-gray-400">
+              <strong className="not-italic mr-2 font-bold">Address:</strong>
+              {`${address}, ${hotelState} ,${country.toLowerCase()}`}
+            </address>
+
+            <p className="transition-all ease-in-out duration-1000 font-normal text-gray-700 dark:text-gray-400 text-ellipsis">
+              <strong className="not-italic mr-2 font-bold">Description:</strong>
+              {hotel_description.length > 900 ? (
+                <span>
+                  {isShowMore ? hotel_description : `${hotel_description.slice(0, 800)}...`}
+                  <button
+                    type="button"
+                    className="ml-1.5 rounded-md font-semibold py-1 px-1.5 hover:bg-gradient-to-l from-[#df293a] to-[#d11450] hover:text-white"
+                    onClick={() => setIsShowMore(!isShowMore)}
+                  >
+                    {isShowMore ? 'Show Less' : 'Show More'}
+
+                  </button>
+                </span>
+              ) : hotel_description}
             </p>
+
             <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+              <strong className="not-italic mr-2 font-bold">Hotel Facilities:</strong>
               {hotel_facilities}
             </p>
             <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+              <strong className="not-italic mr-2 font-bold">Room Facilities:</strong>
               {room_facilities}
             </p>
+
             <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-              {room_count}
-            </p>
-            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-              { property_type}
-            </p>
-            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+              <strong className="not-italic mr-2 font-bold">Province:</strong>
               {province}
             </p>
             <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-              {area}
-            </p>
-            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-              {locality}
-            </p>
-            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+              <strong className="not-italic mr-2 font-bold">LandMark:</strong>
               {landmark}
             </p>
-            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-              {hotelState}
-            </p>
+            <div>
+              <button
+                type="button"
+                className="mr-3 text-sm font-bold bg-gradient-to-l from-[#df293a] to-[#d11450] text-white p-2 shadow-md rounded-md"
+              >
+                Add to cart
+              </button>
+              <button
+                type="button"
+                className="mr-3 text-sm font-bold bg-gradient-to-l from-[#df293a] to-[#d11450] text-white p-2 shadow-md rounded-md"
+              >
+                Book Now
+              </button>
+            </div>
           </div>
         </div>
         )}
