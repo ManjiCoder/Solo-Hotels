@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable camelcase */
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MdAddCircle, MdRemoveCircle, MdDeleteForever } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -13,7 +13,7 @@ import BackButton from '../components/BackButton';
 function Cart() {
   const dispatch = useDispatch();
   const { userCart } = useSelector((state) => state.cart);
-  console.log(userCart);
+  // console.log(userCart);
 
   const handleRemoveRoom = (index) => {
     const { roomCount } = userCart.order[index];
@@ -59,12 +59,19 @@ function Cart() {
           const {
             _id, property_name, room_type,
           } = hotel;
-          console.log(room_type);
-          console.log(obj);
+          // console.log(room_type);
+          console.log(hotel);
           return (
             <section className="" key={_id} id={_id}>
               <div className="grid grid-cols-5 my-7 items-center gap-y-5">
-                <h1 className="font-semibold">{property_name}</h1>
+                <Link
+                  className="font-semibold"
+                  state={hotel}
+                  to={`/hotel/${_id}`}
+                >
+                  {property_name}
+
+                </Link>
                 <h3>{room_type}</h3>
                 <h3>{from}</h3>
                 <h3>{to}</h3>

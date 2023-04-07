@@ -1,14 +1,19 @@
 /* eslint-disable camelcase */
 import React, { useEffect, useState } from 'react';
 import { MdOutlineStarPurple500 } from 'react-icons/md';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 import { showAlertFn } from '../store/slices/AlertSlice';
+import { addItemToCart, getCartItemFn } from '../store/slices/CartSlice';
+import { showToastFn } from '../store/slices/ToastSlice';
 
 function Hotel() {
   const { state } = useLocation();
   const dispatch = useDispatch();
+  console.log(state);
+  // eslint-disable-next-line no-shadow
+  const user = useSelector((state) => state.user);
   const [isShowMore, setIsShowMore] = useState(false);
 
   const {
@@ -70,6 +75,38 @@ function Hotel() {
     const arr = hotel_facilities.split(':');
     console.log(arr);
   }, []);
+
+  const handleAddToCart = async (id) => {
+    if (user !== null) {
+      let response;
+      try {
+        const bodyContent = JSON.stringify({
+          from: '16-03-2033',
+          to: '15-04-2023',
+        });
+
+        response = await fetch(`http://localhost:3000/cart/add/${id}`, {
+          method: 'POST',
+          headers: {
+            'auth-token': localStorage.getItem('token'),
+            'Content-Type': 'application/json',
+          },
+          body: bodyContent,
+        });
+
+        const data = await response.json();
+        // console.log(data);
+        if (response.ok) dispatch(addItemToCart(data));
+        dispatch(showToastFn(response.ok, data.msg));
+        dispatch(getCartItemFn());
+      } catch (error) {
+        dispatch(showAlertFn(false, response.statusText, true));
+        console.log({ error });
+      }
+    } else {
+      dispatch(showToastFn(false, 'Login to add item to cart', 3000));
+    }
+  };
 
   return (
     <div className="bg-slate-100">
@@ -155,6 +192,7 @@ function Hotel() {
               <button
                 type="button"
                 className="mr-3 text-sm font-bold bg-gradient-to-l from-[#df293a] to-[#d11450] text-white p-2 shadow-md rounded-md"
+                onClick={() => handleAddToCart(_id)}
               >
                 Add to cart
               </button>

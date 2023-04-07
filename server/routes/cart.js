@@ -23,7 +23,29 @@ router.get('/all', fetchUser, async (req, res) => {
 
     // Fetching Hotels Details
     const hotels = carts.order.map((obj) => HotelModel.findById(obj.hotel, {
-      property_name: 1, property_type: 1, room_type: 1, state: 1,
+
+      address: 1,
+      area: 1,
+      city: 1,
+      country: 1,
+      crawl_date: 1,
+      hotel_description: 1,
+      hotel_facilities: 1,
+      hotel_star_rating: 1,
+      landmark: 1,
+      locality: 1,
+      latitude: 1,
+      longitude: 1,
+      qts: 1,
+      property_id: 1,
+      property_name: 1,
+      property_type: 1,
+      province: 1,
+      room_count: 1,
+      room_facilities: 1,
+      room_type: 1,
+      state: 1,
+      img: 1,
     }));
 
     // Logic For replacing userId with UserModel & hotelId with HotelModel
