@@ -6,7 +6,7 @@ import { addDays, format } from 'date-fns';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ModalContent from './ModalContent';
 import VerticalLine from './VerticalLine';
@@ -15,6 +15,7 @@ function Search() {
   const allCities = useSelector((state) => state.cities);
   const refOne = useRef('');
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showOption, setShowOption] = useState(false);
@@ -65,20 +66,21 @@ function Search() {
     document.addEventListener('keydown', hideOnEscape, true);
   }, []);
 
-  const handleBooking = (e) => {
+  const handleBooking = (e, city) => {
     e.preventDefault();
     const payload = {
       hotel: search,
       from: format(range[0].startDate, 'dd/MM/yyyy'),
       to: format(range[0].endDate, 'dd/MM/yyyy'),
     };
-    console.log(payload);
+    console.log({ payload, city });
+    navigate(`/city/${city}`);
   };
   return (
     <div className="flex justify-center">
       <form
         className="inline-flex justify-center border border-gray-500 rounded-sm"
-        onSubmit={handleBooking}
+        onSubmit={(e) => handleBooking(e, search.split(',')[0])}
       >
         {/* Search-Input */}
         <section className="relative">

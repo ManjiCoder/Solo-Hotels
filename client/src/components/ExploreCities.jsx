@@ -23,7 +23,7 @@ function ExploreCities() {
           <div className="text-center capitalize" key={city}>
             <Link
               className="text-2xl cursor-pointer font-semibold bg-blue-600 text-white w-24 h-16 flex items-center justify-center rounded-md"
-              to={`/cities/${city}`}
+              to={`/city/${city}`}
             >
               <button type="button">{city === 'near me' ? <MdNearMe /> : city[0]}</button>
             </Link>

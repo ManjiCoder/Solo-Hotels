@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable camelcase */
 import React from 'react';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 import { MdOutlineStarPurple500 } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -78,11 +80,16 @@ function HotelsCard(props) {
                 <span className="ml-1.5">{hotel_star_rating.slice(2, 20)}</span>
 
               </p>
-              <img
+              <LazyLoadImage
+                alt={property_name}
+                effect="blur"
+                src={img}
+              />
+              {/* <img
                 className="rounded-t-lg w-full h-52 aspect-video"
                 src={img}
                 alt=""
-              />
+              /> */}
               <div className="p-5">
                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                   {property_name.length > 20 ? `${property_name.slice(0, 20)}...` : property_name}

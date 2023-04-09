@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { showAlertFn } from '../store/slices/AlertSlice';
 import { showToastFn } from '../store/slices/ToastSlice';
 import HotelsCard from '../components/HotelsCard';
+// import InfiniteScroll from "react-infinite-scroll-component";
 
 function Hotels() {
   const [hotels, setHotels] = useState([]);
@@ -37,6 +38,7 @@ function Hotels() {
   return (
     <div className=" bg-slate-100">
       <HotelsCard hotels={hotels} />
+
     </div>
   );
 }

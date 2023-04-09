@@ -1,4 +1,4 @@
-{
+const data = {
   hotel_facilities: [
     'Travel:Travel Desk',
     'Parking',
@@ -1037,4 +1037,4 @@
     ' Hair Dryer Newspaper Bedside Lamp Toiletries ',
     ' Newspaper Hangers Satellite Television ',
   ],
-}
+};

@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+
 import HeadNav from './components/HeadNav';
 import Account from './pages/Account';
 import Home from './pages/Home';
@@ -45,7 +46,7 @@ function App() {
 
         <Route path="/about" exact element={<About mainTitle={mainTitle} />} />
         <Route path="/hotels" exact element={<Hotels />} />
-        <Route path="/cities/:cityName" exact element={<Cities />} />
+        <Route path="/city/:cityName" exact element={<Cities />} />
         <Route path="/hotel/:id" exact element={<Hotel />} />
 
         {/* Only Logout User can access */}
