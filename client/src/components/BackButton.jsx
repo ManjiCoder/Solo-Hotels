@@ -13,7 +13,7 @@ function BackButton() {
         className="text-4xl cursor-pointer"
         onClick={() => navigate(-1)}
       >
-        <BsFillArrowLeftCircleFill />
+        <BsFillArrowLeftCircleFill className="text-blue-700 hover:text-blue-800" />
       </button>
     </div>
   );

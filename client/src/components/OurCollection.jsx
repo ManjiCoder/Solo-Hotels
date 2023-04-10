@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
 import { MdOutlineStarPurple500 } from 'react-icons/md';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useNavigate } from 'react-router-dom';
 
 function OurCollection() {
@@ -50,11 +51,12 @@ function OurCollection() {
                 <MdOutlineStarPurple500 />
 
               </span>
-              <img
-                src={obj.img}
+
+              <LazyLoadImage
                 className="h-28 w-full rounded-md aspect-video"
-                alt=""
-                loading="lazy"
+                alt={obj.property_name}
+                effect="blur"
+                src={obj.img}
               />
 
               <div className="w-44 p-2 flex flex-col justify-between">

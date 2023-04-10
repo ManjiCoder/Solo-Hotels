@@ -38,7 +38,6 @@ function Hotels() {
   return (
     <div className=" bg-slate-100">
       <HotelsCard hotels={hotels} />
-
     </div>
   );
 }

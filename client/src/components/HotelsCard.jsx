@@ -72,24 +72,21 @@ function HotelsCard(props) {
                 navigate(`/hotel/${_id}`, { state: obj });
               }}
             >
-              <p
-                className="flex items-center text-sm absolute right-0 font-bold bg-gradient-to-l from-[#df293a] to-[#d11450] text-white p-2 shadow-md rounded-md"
-              >
-                {hotel_star_rating[0]}
-                <MdOutlineStarPurple500 />
-                <span className="ml-1.5">{hotel_star_rating.slice(2, 20)}</span>
+              {hotel_star_rating && (
+                <p
+                  className="flex items-center text-sm absolute z-10 right-0 font-bold bg-gradient-to-l from-[#df293a] to-[#d11450] text-white p-2 shadow-md rounded-md"
+                >
+                  {hotel_star_rating[0]}
+                  <MdOutlineStarPurple500 />
+                  <span className="ml-1.5">{hotel_star_rating.slice(2, 20)}</span>
 
-              </p>
+                </p>
+              )}
               <LazyLoadImage
                 alt={property_name}
                 effect="blur"
                 src={img}
               />
-              {/* <img
-                className="rounded-t-lg w-full h-52 aspect-video"
-                src={img}
-                alt=""
-              /> */}
               <div className="p-5">
                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                   {property_name.length > 20 ? `${property_name.slice(0, 20)}...` : property_name}

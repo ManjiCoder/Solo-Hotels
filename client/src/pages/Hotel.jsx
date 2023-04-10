@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import React, { useEffect, useState } from 'react';
 import { MdOutlineStarPurple500 } from 'react-icons/md';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import BackButton from '../components/BackButton';
@@ -111,22 +112,23 @@ function Hotel() {
   return (
     <div className="bg-slate-100">
       <BackButton />
-      <section className="py-4 px-11">
+      <section className="py-4 px-11 w-11/12 mx-auto">
         {state && (
         <div
           className="relative shadow-md bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700"
           id={_id}
         >
-          <span className="flex items-center text-sm absolute right-0 font-bold bg-gradient-to-l from-[#df293a] to-[#d11450] text-white p-2 shadow-md rounded-md">
+          <span className="flex items-center text-sm absolute right-0 z-10 font-bold bg-gradient-to-l from-[#df293a] to-[#d11450] text-white p-2 shadow-md rounded-md">
             {hotel_star_rating[0]}
             <MdOutlineStarPurple500 />
             <span className="ml-1.5">{hotel_star_rating.slice(2, 20)}</span>
           </span>
 
-          <img
-            className="rounded-t-lg mx-auto border shadow-md rounded-md w-full h-96 aspect-video"
+          <LazyLoadImage
+            className="rounded-t-lg mx-auto border shadow-md rounded-md w-[100vw] h-96 aspect-video"
+            alt={property_name}
+            effect="blur"
             src={img}
-            alt=""
           />
           <div className="p-5 flex flex-col gap-3">
             <h2 className="mb-2 gap-3 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -154,6 +156,7 @@ function Hotel() {
               {`${address}, ${hotelState} ,${country.toLowerCase()}`}
             </address>
 
+            {hotel_description && (
             <p className="transition-all ease-in-out duration-1000 font-normal text-gray-700 dark:text-gray-400 text-ellipsis">
               <strong className="not-italic mr-2 font-bold">Description:</strong>
               {hotel_description.length > 900 ? (
@@ -170,6 +173,7 @@ function Hotel() {
                 </span>
               ) : hotel_description}
             </p>
+            )}
 
             <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
               <strong className="not-italic mr-2 font-bold">Hotel Facilities:</strong>

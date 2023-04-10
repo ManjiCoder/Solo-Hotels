@@ -56,7 +56,7 @@ function HeadNav(props) {
     dispatch(setCart({ orderCount: 0 }));
   };
   return (
-    <header className="sticky top-0 grid grid-cols-[0.5fr,2fr,1fr] boder border-b-2 bg-slate-50 z-10 border-gray-300 shadow-md items-center px-4">
+    <header className="sticky top-0 grid grid-cols-[0.5fr,2fr,1fr] boder border-b-2 bg-slate-50 z-20 border-gray-300 shadow-md items-center px-4">
       {/* Brand Name */}
       <div className="text-2xl text-center font-bold  text-red-600">
         <Link to="/">{mainTitle}</Link>
