@@ -112,7 +112,7 @@ function Hotel() {
   return (
     <div className="bg-slate-100">
       <BackButton />
-      <section className="py-4 px-11 w-11/12 mx-auto">
+      <section className="py-4 mb-5 px-11 w-9/12 mx-auto">
         {state && (
         <div
           className="relative shadow-md bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700"
@@ -124,11 +124,12 @@ function Hotel() {
             <span className="ml-1.5">{hotel_star_rating.slice(2, 20)}</span>
           </span>
 
-          <LazyLoadImage
-            className="rounded-t-lg mx-auto border shadow-md rounded-md w-[100vw] h-96 aspect-video"
+          <img
+            className="rounded-t-lg border shadow-md rounded-md w-full h-96 aspect-video"
             alt={property_name}
-            effect="blur"
-            src={img}
+            // effect="blur"
+            src={img || 'https://cdn.pixabay.com/photo/2017/01/14/12/48/hotel-1979406_960_720.jpg'}
+            loading="lazy"
           />
           <div className="p-5 flex flex-col gap-3">
             <h2 className="mb-2 gap-3 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">

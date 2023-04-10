@@ -71,6 +71,14 @@ function HeadNav(props) {
             </NavLink>
           </li>
         ))}
+        {user !== null && user.role === 'admin' && (
+          <li className="">
+            <NavLink className={`flex items-center hover:bg-slate-200 p-3 ${pathname === '/dashboard' ? 'bg-slate-200' : ''}`} to="/dashboard">
+              <span className="text-2xl mr-3"><MdAdminPanelSettings /></span>
+              Admin
+            </NavLink>
+          </li>
+        )}
       </ul>
 
       {/* Show Search only if user visit /hotels page */}
@@ -135,7 +143,7 @@ function HeadNav(props) {
 
           <AiOutlineShoppingCart className="text-2xl mr-0.5" />
           <span className="absolute text-center right-0 top-0 h-4 w-4 text-xs bg-red-500 rounded-full shadow-md text-white">
-            {userCart !== undefined ? userCart.orderCount : 0}
+            {userCart !== undefined && userCart.orderCount ? userCart.orderCount : 0 }
           </span>
         </Link>
       </div>

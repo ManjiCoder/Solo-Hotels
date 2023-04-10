@@ -59,7 +59,7 @@ export function getCartItemFn() {
 
       const data = await response.json();
       // console.log(data);
-      if (!response.ok) dispatch(showToastFn(response.ok, data.msg, 5000));
+      if (!response.ok && data.msg !== 'Your cart is empty') dispatch(showToastFn(response.ok, data.msg, 5000));
       dispatch(setCart(data));
     } catch (error) {
       dispatch(showAlertFn(false, response.statusText, true));
