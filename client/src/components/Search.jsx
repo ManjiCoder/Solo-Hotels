@@ -90,6 +90,7 @@ function Search() {
             placeholder="Search for hotels or city"
             onChange={handleChange}
             value={search}
+            required
           />
           <div
             className={`absolute w-full z-10 bg-white ${showOption && search.length > 0 && showCity.length > 0 ? 'flex flex-col gap-3 p-4 transition-all' : 'hidden'} max-h-60 shadow-md border-t ${showCity.length > 4 ? 'overflow-y-scroll' : 'overflow-hidden'}`}
