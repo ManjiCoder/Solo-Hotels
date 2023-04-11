@@ -45,7 +45,7 @@ function OurCollection() {
               onClick={() => navigate(`/hotel/${_id}`, { state: obj })}
             >
               <span
-                className="flex items-center text-xs absolute right-0 font-bold bg-gradient-to-l from-[#df293a] to-[#d11450] text-white p-1 shadow-md rounded-sm rounded-tr-md"
+                className="flex items-center text-xs absolute right-0 z-10 font-bold bg-gradient-to-l from-[#df293a] to-[#d11450] text-white p-1 shadow-md rounded-sm rounded-tr-md"
               >
                 {hotel_star_rating[0]}
                 <MdOutlineStarPurple500 />
