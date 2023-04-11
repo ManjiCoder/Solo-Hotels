@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react/prop-types */
 /* eslint-disable consistent-return */
 /* eslint-disable camelcase */
@@ -6,10 +7,17 @@ import { Link } from 'react-router-dom';
 import { MdAddCircle, MdRemoveCircle, MdDeleteForever } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  addRoom, deleteOrder, removeRoom,
+  addRoom, deleteOrder, getCartItemFn, removeRoom,
 } from '../store/slices/CartSlice';
 import { showToastFn } from '../store/slices/ToastSlice';
 import BackButton from '../components/BackButton';
+import { showAlertFn } from '../store/slices/AlertSlice';
+
+// console.log(localStorage.getItem('token'));
+const headersList = {
+  'auth-token': localStorage.getItem('token'),
+  'Content-Type': 'application/json',
+};
 
 function Cart() {
   const { userCart } = useSelector((state) => state.cart);
@@ -27,19 +35,77 @@ export default Cart;
 
 function CartItem({ userCart }) {
   const dispatch = useDispatch();
-  const handleRemoveRoom = (index) => {
+  const handleRemoveRoom = async (index, id) => {
     const { roomCount } = userCart.order[index];
     if (roomCount <= 1) return dispatch(showToastFn(false, 'Room Cannot Be Empty'));
     dispatch(removeRoom(index));
+    // API Call
+    const bodyContent = JSON.stringify({
+      roomCount: roomCount - 1,
+    });
+
+    let response;
+    try {
+      response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}cart/update/${id}`, {
+        method: 'PUT',
+        body: bodyContent,
+        headers: headersList,
+      });
+
+      const data = await response.json();
+      dispatch(showToastFn(response.ok, data.msg));
+    } catch (error) {
+      dispatch(showAlertFn(false, response.statusText, true));
+      console.log({ error }, response.statusText);
+    }
   };
 
-  const handleAddRoom = (index) => {
+  const handleAddRoom = async (index, id) => {
+    // Validation for rooms limit
     const { roomCount } = userCart.order[index];
-    if (roomCount >= 25) return dispatch(showToastFn(false, 'Rooms Limit Exceeded'));
+    if (roomCount >= 6) return dispatch(showToastFn(false, 'Rooms Limit Exceeded'));
     dispatch(addRoom(index));
+    // API Call
+    let response;
+    try {
+      response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}cart/add/${id}`, {
+        method: 'POST',
+        // body: bodyContent,  You can pass it & it's not compalsory
+        headers: headersList,
+      });
+
+      const data = await response.json();
+      console.log(data);
+      dispatch(showToastFn(response.ok, data.msg));
+    } catch (error) {
+      dispatch(showAlertFn(false, response.statusText, true));
+      console.log({ error }, response.statusText);
+    }
   };
 
-  const handleDeleteOrder = (index) => {
+  const handleDeleteOrder = async (index, id) => {
+    // API Call
+    const bodyContent = JSON.stringify({
+      hotel: userCart._id,
+    });
+    let response;
+    try {
+      response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}cart/remove-order/${id}`, {
+        method: 'PUT',
+        body: bodyContent,
+        headers: headersList,
+      });
+      const data = await response.json();
+      console.log(data);
+      dispatch(showToastFn(response.ok, data.msg));
+      dispatch(deleteOrder(index));
+
+      if (response.ok) dispatch(getCartItemFn());
+    } catch (error) {
+      dispatch(showAlertFn(false, response.statusText, true));
+      console.log({ error }, response.statusText);
+    }
+
     dispatch(deleteOrder(index));
     dispatch(showToastFn(true, 'Item remove successfully'));
   };
@@ -47,7 +113,7 @@ function CartItem({ userCart }) {
     <div className="px-5">
       <div className="mt-7 grid grid-cols-5 font-bold">
         <h2>Hotel Name</h2>
-        <h2>State</h2>
+        <h2>Room-Type</h2>
         <h2>Check-In</h2>
         <h2>Check-Out</h2>
         <h2>Rooms</h2>
@@ -61,7 +127,7 @@ function CartItem({ userCart }) {
           _id, property_name, room_type,
         } = hotel;
         // console.log(room_type);
-        console.log({ hotel });
+        // console.log({ hotel });
         return (
           <section className="" key={_id} id={_id}>
             <div className="grid grid-cols-5 my-7 items-center gap-y-5">
@@ -80,7 +146,7 @@ function CartItem({ userCart }) {
                 <button
                   className="text-2xl text-red-500"
                   type="button"
-                  onClick={() => handleRemoveRoom(index)}
+                  onClick={() => handleRemoveRoom(index, _id)}
                 >
                   <MdRemoveCircle />
                 </button>
@@ -88,14 +154,14 @@ function CartItem({ userCart }) {
                 <button
                   className="text-2xl text-blue-500"
                   type="button"
-                  onClick={() => handleAddRoom(index)}
+                  onClick={() => handleAddRoom(index, _id)}
                 >
                   <MdAddCircle />
                 </button>
                 <button
                   className="ml-10 text-3xl text-red-500"
                   type="button"
-                  onClick={() => handleDeleteOrder(index)}
+                  onClick={() => handleDeleteOrder(index, _id)}
                 >
                   <MdDeleteForever />
                 </button>

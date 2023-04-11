@@ -197,9 +197,9 @@ router.put('/remove-order/:id', fetchUser, async (req, res) => {
     const user = req.user.id;
     const hotelId = req.params.id;
     const isOrder = await UserCartModel.findOne({ user });
+    console.log(isOrder.order.length);
     if (!isOrder) return res.status(400).json({ msg: 'Your cart is empty' });
 
-    // check req.params.id is there in db
     // check req.params.id is there in db
     const isHotel = isOrder.order.filter((obj) => obj.hotel === hotelId);
 
@@ -214,7 +214,7 @@ router.put('/remove-order/:id', fetchUser, async (req, res) => {
     const updateOrder = await UserCartModel.updateOne({ user }, {
       $set: {
         order: newOrder,
-        orderCount: isOrder - 1,
+        orderCount: isOrder.order.length - 1,
       },
     });
     const restOrder = await UserCartModel.findOne({ user });

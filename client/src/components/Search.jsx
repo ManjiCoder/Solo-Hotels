@@ -206,7 +206,7 @@ function DateModal({ range, setRange, closeDateModal }) {
                   maxDate={addMonths(new Date(), 12)}
                   months={2}
                   direction="horizontal"
-                  className={`flex justify-center rounded-lg border border-gray-300 mx-auto shadow-lg ${pathname === '/hotels' && 'text-sm'}`}
+                  className={`flex justify-center rounded-lg border border-gray-300 mx-auto shadow-lg ${pathname === '/hotels' ? 'text-sm' : 'text-base'}`}
                   rangeColors={['rgb(239 70 80)']}
                 />
                 <div className="mt-4 flex justify-end">

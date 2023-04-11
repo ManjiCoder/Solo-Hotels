@@ -138,7 +138,7 @@ function UserInfo({ user }) {
             <Popover.Button
               className={`
                 ${open ? '' : 'text-opacity-90'}
-                group inline-flex items-center rounded-md py-2 text-base font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 justify-center`}
+                group inline-flex items-center rounded-full text-base font-medium hover:text-opacity-100 focus-within:outline-none focus-within:ring-2 focus-within:ring-red-600 focus-within:ring-opacity-75 justify-center`}
             >
               <span
                 className="flex justify-center items-center h-9 w-9 font-bold text-xl rounded-full ring-0 focus:ring-2 focus:ring-slate-500 bg-slate-50 border shadow-md"

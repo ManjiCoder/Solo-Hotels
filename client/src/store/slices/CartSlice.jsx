@@ -10,7 +10,7 @@ const CartSlice = createSlice({
   reducers: {
     addItemToCart(state, action) {
       const { updateRoomCount } = action.payload;
-      console.log(action.payload);
+      // console.log(action.payload);
       state.order = updateRoomCount;
     },
     setCart(state, action) {
