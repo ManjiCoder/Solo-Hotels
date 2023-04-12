@@ -19,9 +19,9 @@ const router = express.Router();
 // ROUTE: 1 Get all User from db using GET => "/admin/users"
 router.get('/users', fetchUser, isAdmin, async (req, res) => {
   try {
-    const users = await UserModel.find({}, { name: 1, role: 1 });
+    const users = await UserModel.find({}, { name: 1, role: 1, email: 1 });
     // console.log(users);
-    res.json({ users });
+    res.json(users);
     // return res.status(401).json({ msg: 'You don\'t have permission' });
   } catch (error) {
     console.log(error.message);

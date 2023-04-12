@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MdDashboard, MdLogout, MdMenu } from 'react-icons/md';
 import { FaUsers } from 'react-icons/fa';
@@ -7,7 +7,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/slices/userSlice';
 import { showToastFn } from '../store/slices/ToastSlice';
 import { setCart } from '../store/slices/CartSlice';
+import { showAlertFn } from '../store/slices/AlertSlice';
 
+const headersList = {
+  'auth-token': localStorage.getItem('token'),
+};
 const navListItem = [
   {
     name: 'Dashboard',
@@ -33,10 +37,33 @@ const navListItem = [
 function Admin() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [view, setView] = useState('list');
   const [isOpen, setIsOpen] = useState(false);
   const showNav = () => {
     setIsOpen(true);
   };
+  const [allUser, setAllUser] = useState([]);
+  const fetchAllUser = async () => {
+    let response;
+    try {
+      response = await fetch('http://localhost:3000/admin/users', {
+        method: 'GET',
+        headers: headersList,
+      });
+
+      const data = await response.json();
+      console.log(data);
+      setAllUser(data);
+      dispatch(showToastFn(response.ok, data.msg || 'Users Loaded'));
+    } catch (error) {
+      dispatch(showAlertFn(false, response.statusText, true));
+      console.log({ error }, response.statusText);
+    }
+  };
+  useEffect(() => {
+    fetchAllUser();
+  }, []);
+
   const handleSignout = () => {
     dispatch(logout());
     dispatch(showToastFn(true, 'logout successfully'));
@@ -93,9 +120,27 @@ function Admin() {
         </ul>
       </nav>
 
-      <main>
+      <main className="flex flex-1 flex-col p-4">
+        <div className="flex justify-between place-self-end border shadow-lg rounded-md font-semibold overflow-hidden">
+          <button
+            type="button"
+            className={`px-5 py-3 border-r ${view === 'list' && 'bg-gradient-to-l from-[#df293a] to-[#d11450] text-white'}`}
+            onClick={() => setView('list')}
+          >
+            List
+
+          </button>
+          <button
+            type="button"
+            className={`px-5 py-3 border-r ${view === 'card' && 'bg-gradient-to-l from-[#df293a] to-[#d11450] text-white'}`}
+            onClick={() => setView('card')}
+          >
+            Card
+
+          </button>
+        </div>
         <div className="lg:mx-0 mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-          jfdl
+          <Table users={allUser} />
         </div>
       </main>
     </div>
@@ -103,3 +148,48 @@ function Admin() {
 }
 
 export default Admin;
+
+function Table({ users }) {
+  <div className="max-w-6xl py-8 mx-auto lg:py-16 ">
+    <div className="px-4 sm:px-6 lg:px-8">
+      <div className="sm:flex sm:items-center">
+        <div className="sm:flex-auto">
+          <h1 className="text-xl font-semibold text-gray-900">Users</h1>
+          <p className="mt-2 text-sm text-gray-700">
+            A list of all the users in Solo Hotels including their name, email and role.
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-col mt-8">
+        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-300">
+                <thead className="bg-gray-50">
+                  <tr>
+                    Name
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {users.map((person) => (
+                    <tr key={person.email}>
+                      <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6">
+                        {person.name}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        {person.email}
+                      </td>
+                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
+                        {person.role}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>;
+}

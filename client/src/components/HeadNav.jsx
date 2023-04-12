@@ -194,7 +194,7 @@ function UserInfo({ user }) {
                         name, href, icon, isFuntion,
                       }) => (
                         <li
-                          className="hover:text-white hover:bg-gradient-to-l from-[#df293a] to-[#d11450] text-sm font-semibold flex items-center space-x-2 p-2"
+                          className="font-medium hover:text-white hover:bg-gradient-to-l from-[#df293a] to-[#d11450] text-sm flex items-center space-x-2 p-2"
                           key={name}
                         >
                           {icon}
