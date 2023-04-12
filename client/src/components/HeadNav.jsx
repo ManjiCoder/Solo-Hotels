@@ -3,10 +3,13 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { FiPhoneCall } from 'react-icons/fi';
+import { FaUser } from 'react-icons/fa';
 import { AiOutlineHome, AiOutlineQuestionCircle, AiOutlineShoppingCart } from 'react-icons/ai';
 import { BsBuildings } from 'react-icons/bs';
 // eslint-disable-next-line no-unused-vars
-import { MdAdminPanelSettings, MdOutlineShoppingBag } from 'react-icons/md';
+import {
+  MdAdminPanelSettings, MdOutlineShoppingBag, MdEmail, MdSettings, MdLogout,
+} from 'react-icons/md';
 import {
   Link, NavLink, useLocation,
 } from 'react-router-dom';
@@ -17,36 +20,36 @@ import { showToastFn } from '../store/slices/ToastSlice';
 import Search from './Search';
 import { setCart } from '../store/slices/CartSlice';
 
+const navArr = Object.freeze([
+  {
+    name: 'Home',
+    icon: <AiOutlineHome />,
+    href: '/',
+  },
+  {
+    name: 'About',
+    icon: <AiOutlineQuestionCircle />,
+    href: '/about',
+  },
+  {
+    name: 'Booking',
+    icon: <MdOutlineShoppingBag />,
+    href: '/booking',
+  },
+  {
+    name: 'Hotels',
+    icon: <BsBuildings />,
+    href: '/hotels',
+  },
+
+]);
+
 function HeadNav(props) {
   // eslint-disable-next-line react/prop-types
   const { mainTitle } = props;
   const { pathname } = useLocation();
   const user = useSelector((state) => state.user);
   const { userCart } = useSelector((state) => state.cart);
-
-  const navArr = Object.freeze([
-    {
-      name: 'Home',
-      icon: <AiOutlineHome />,
-      href: '/',
-    },
-    {
-      name: 'About',
-      icon: <AiOutlineQuestionCircle />,
-      href: '/about',
-    },
-    {
-      name: 'Booking',
-      icon: <MdOutlineShoppingBag />,
-      href: '/booking',
-    },
-    {
-      name: 'Hotels',
-      icon: <BsBuildings />,
-      href: '/hotels',
-    },
-
-  ]);
 
   return (
     <header className="sticky top-0 grid grid-cols-[0.5fr,2fr,1fr] boder border-b-2 bg-slate-50 z-20 border-gray-300 shadow-md items-center px-4">
@@ -124,6 +127,32 @@ HeadNav.prototype = {
 };
 
 function UserInfo({ user }) {
+  const userArr = Object.freeze([
+    {
+      name: user.name,
+      icon: <FaUser />,
+      href: '#',
+      isFuntion: false,
+    },
+    {
+      name: user.email.length > 16 ? `${user.email.slice(0, 15)}...` : user.email,
+      icon: <MdEmail />,
+      href: '#',
+      isFuntion: false,
+    },
+    {
+      name: 'Setting',
+      icon: <MdSettings />,
+      href: '/account',
+      isFuntion: false,
+    },
+    {
+      name: 'Logout',
+      icon: <MdLogout />,
+      href: '/login',
+      isFuntion: true,
+    },
+  ]);
   const dispatch = useDispatch();
   const handleSignout = () => {
     dispatch(logout());
@@ -159,16 +188,28 @@ function UserInfo({ user }) {
                 <div className="overflow-hidden rounded-lg shadow-lg">
 
                   {/*  Show UserInfo */}
-                  <div className=" p-3 z-10 rounded-md bg-white shadow-md -left-12 h-36 w-44">
-                    <ul className="flex flex-col gap-3 text-gray-700">
-                      <li className="text-sm font-semibold">{user.name}</li>
-                      <li className="text-sm overflow-hidden">{user.email}</li>
-                      <li className="text-sm hover:font-semibold">
-                        <NavLink to="/account">Setting</NavLink>
-                      </li>
-                      <li className="text-sm hover:font-semibold">
-                        <NavLink to="/login" onClick={handleSignout}>Signout</NavLink>
-                      </li>
+                  <div className="py-3 z-10 rounded-md bg-white shadow-md -left-12 h-52 w-44 border">
+                    <ul className="flex flex-col gap-3 text-gray-700 ">
+                      {userArr.map(({
+                        name, href, icon, isFuntion,
+                      }) => (
+                        <li
+                          className="hover:text-white hover:bg-gradient-to-l from-[#df293a] to-[#d11450] text-sm font-semibold flex items-center space-x-2 p-2"
+                          key={name}
+                        >
+                          {icon}
+                          {isFuntion ? (
+                            <Link to={href} onClick={handleSignout}>
+                              {name}
+                            </Link>
+                          ) : (
+                            <Link to={href}>
+                              {name}
+                            </Link>
+                          )}
+                        </li>
+                      ))}
+
                     </ul>
 
                   </div>

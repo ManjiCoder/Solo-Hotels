@@ -94,7 +94,7 @@ function Search() {
               return (
                 <button
                   type="button"
-                  className="w-full text-left text-xl font-semibold capitalize hover:text-red-700"
+                  className="w-full text-left text-xl font-semibold capitalize p-2 hover:text-white hover:bg-gradient-to-l from-[#df293a] to-[#d11450] rounded-sm"
                   key={city}
                   onClick={() => {
                     setSearch(cityStr);
