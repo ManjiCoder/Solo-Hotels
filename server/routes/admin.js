@@ -19,7 +19,9 @@ const router = express.Router();
 // ROUTE: 1 Get all User from db using GET => "/admin/users"
 router.get('/users', fetchUser, isAdmin, async (req, res) => {
   try {
-    const users = await UserModel.find({}, { name: 1, role: 1, email: 1 });
+    const users = await UserModel.find({}, {
+      name: 1, role: 1, email: 1, date: 1,
+    });
     // console.log(users);
     res.json(users);
     // return res.status(401).json({ msg: 'You don\'t have permission' });
@@ -41,8 +43,8 @@ router.put('/users/update/:id', fetchUser, isAdmin, async (req, res) => {
     if (name) newUser.name = name;
     if (email) newUser.email = email;
     if (role) newUser.role = role;
-    const updateUser = await UserModel.findByIdAndUpdate({ _id: req.params.id }, { $set: newUser }, { new: true });
-    res.json({ msg: 'User Updated Successfully', updateUser });
+    const updateUser = await UserModel.updateOne({ _id: req.params.id }, { $set: newUser }, { new: true });
+    res.json({ msg: updateUser.modifiedCount !== 0 ? 'User Updated Successfully' : 'User Update Unsuccessful', user: checkUser });
   } catch (error) {
     if (
       error.message === 'Cast to ObjectId failed for value "{ _id: undefined }" (type Object) at path "_id" for model "user"'
@@ -61,8 +63,8 @@ router.delete('/users/delete/:id', fetchUser, isAdmin, async (req, res) => {
     console.log(checkUser);
     if (!checkUser || checkUser.length === 0) return res.status(400).json({ msg: 'User Not Found' });
 
-    const deleteUser = await UserModel.findOneAndDelete({ _id: req.params.id });
-    res.json({ msg: 'User Delete Successfully', deleteUser });
+    const deleteUser = await UserModel.deleteOne({ _id: req.params.id });
+    res.json({ msg: deleteUser.modifiedCount !== 0 ? 'User Updated Successfully' : 'User Updated Successfully', user: checkUser });
   } catch (error) {
     if (
       error.message === `Cast to ObjectId failed for value "${req.params.id}" (type string) at path "_id" for model "user"`

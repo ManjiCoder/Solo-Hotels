@@ -1,9 +1,15 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable react/prop-types */
+import React, { useEffect, useState, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { MdDashboard, MdLogout, MdMenu } from 'react-icons/md';
-import { FaUsers } from 'react-icons/fa';
+import {
+  MdBorderAll, MdDashboard, MdLogout, MdMenu,
+} from 'react-icons/md';
+import { FaUserEdit, FaUsers, FaUserSlash } from 'react-icons/fa';
 import { RxCross1 } from 'react-icons/rx';
+import { GoListUnordered } from 'react-icons/go';
 import { useDispatch, useSelector } from 'react-redux';
+import { Dialog, Transition } from '@headlessui/react';
 import { logout } from '../store/slices/userSlice';
 import { showToastFn } from '../store/slices/ToastSlice';
 import { setCart } from '../store/slices/CartSlice';
@@ -42,6 +48,9 @@ function Admin() {
   const showNav = () => {
     setIsOpen(true);
   };
+  // const closeNav = () => {
+  //   setIsOpen(false);
+  // };
   const [allUser, setAllUser] = useState([]);
   const fetchAllUser = async () => {
     let response;
@@ -124,24 +133,43 @@ function Admin() {
         <div className="flex justify-between place-self-end border shadow-lg rounded-md font-semibold overflow-hidden">
           <button
             type="button"
-            className={`px-5 py-3 border-r ${view === 'list' && 'bg-gradient-to-l from-[#df293a] to-[#d11450] text-white'}`}
+            className={`transition-all w-20 flex items-center justify-around px-2 py-3 border-r ${view === 'list' && 'bg-gradient-to-l from-[#df293a] to-[#d11450] text-white'}`}
             onClick={() => setView('list')}
           >
-            List
+            <GoListUnordered />
+            <span>List</span>
 
           </button>
           <button
             type="button"
-            className={`px-5 py-3 border-r ${view === 'card' && 'bg-gradient-to-l from-[#df293a] to-[#d11450] text-white'}`}
+            className={`transition-all w-20 flex items-center justify-around px-2 py-3 border-r ${view === 'card' && 'bg-gradient-to-l from-[#df293a] to-[#d11450] text-white'}`}
             onClick={() => setView('card')}
           >
-            Card
+            <MdBorderAll className="text-xl" />
+            <span>Card</span>
 
           </button>
         </div>
-        <div className="lg:mx-0 mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-          <Table users={allUser} />
+
+        <div className="w-full">
+          <div className="px-4 sm:px-6 lg:px-8">
+            <div className="sm:flex sm:items-center">
+              <div className="sm:flex-auto">
+                <h1 className="text-xl font-semibold text-gray-900">Users</h1>
+                <p className="mt-2 text-sm text-gray-700">
+                  A list of all the users in Solo Hotels including their name, email and role.
+                </p>
+              </div>
+            </div>
+            {view === 'list' ? (
+              <UserTable
+                users={allUser}
+                fetchAllUser={fetchAllUser}
+              />
+            ) : <UserCard users={allUser} />}
+          </div>
         </div>
+
       </main>
     </div>
   );
@@ -149,47 +177,151 @@ function Admin() {
 
 export default Admin;
 
-function Table({ users }) {
-  <div className="max-w-6xl py-8 mx-auto lg:py-16 ">
-    <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:flex sm:items-center">
-        <div className="sm:flex-auto">
-          <h1 className="text-xl font-semibold text-gray-900">Users</h1>
-          <p className="mt-2 text-sm text-gray-700">
-            A list of all the users in Solo Hotels including their name, email and role.
-          </p>
-        </div>
-      </div>
-      <div className="flex flex-col mt-8">
-        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
-                  <tr>
-                    Name
+function UserTable({ users, fetchAllUser }) {
+  const [showModal, setShowModal] = useState(false);
+  const [editUser, setEditUser] = useState({});
+  const handleDeleteUser = async (id) => {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}admin/users/delete/${id}`, {
+      method: 'DELETE',
+      headers: headersList,
+    });
+
+    const data = await response.json();
+    console.log(data);
+    fetchAllUser();
+  };
+  const handleEditUser = async (id, user) => {
+    setShowModal(true);
+    console.log(id, user);
+    setEditUser(user);
+  };
+
+  return (
+    <div className="flex flex-col mt-8 shadow-lg border rounded-md">
+      <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+          <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+            <table className="min-w-full divide-y divide-gray-300">
+              <thead className="bg-gray-50">
+                <tr className="">
+                  <td className="font-semibold text-base py-4 pl-4 pr-3 text-gray-900 whitespace-nowrap sm:pl-6">Name</td>
+                  <td className="font-semibold text-base px-3 py-4 text-gray-900 whitespace-nowrap">Email</td>
+                  <td className="font-semibold text-base px-3 py-4 text-gray-900 whitespace-nowrap">Last Login</td>
+                  <td className="font-semibold text-base px-3 py-4 text-gray-900 whitespace-nowrap">Role</td>
+                </tr>
+
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {users.map((person) => (
+                  <tr key={person.email}>
+                    <td className="capitalize py-4 pl-4 pr-3 text-sm font-medium text-gray-700 whitespace-nowrap sm:pl-6">
+                      {person.name}
+                    </td>
+                    <td className="px-3 py-4 text-sm text-blue-700 font-medium whitespace-nowrap">
+                      {person.email}
+                    </td>
+                    <td className="px-3 py-4 text-sm text-gray-700 font-medium whitespace-nowrap">
+                      {`${new Date(person.date).toDateString()}, ${new Date(person.date).toLocaleTimeString()}`}
+                    </td>
+                    <td className="flex items-center capitalize px-3 py-4 text-sm text-gray-700 font-medium whitespace-nowrap">
+                      {person.role}
+                      <div className="ml-2 space-x-2 text-xl relative bg-slate-50 z-10">
+                        <button
+                          className="text-blue-600"
+                          type="button"
+                          onClick={() => handleEditUser(person._id, person)}
+                        >
+                          <FaUserEdit />
+                          {showModal && <EditUserModal user={editUser} closeModal={() => setShowModal(false)} />}
+
+                        </button>
+                        <button
+                          className="text-red-600"
+                          type="button"
+                          onClick={() => handleDeleteUser(person._id)}
+                        >
+                          <FaUserSlash />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {users.map((person) => (
-                    <tr key={person.email}>
-                      <td className="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 whitespace-nowrap sm:pl-6">
-                        {person.name}
-                      </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {person.email}
-                      </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {person.role}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
-  </div>;
+  );
+}
+
+function UserCard({ users }) {
+  return (
+    <div>{JSON.stringify(users)}</div>
+  );
+}
+
+function EditUserModal({ user, closeModal }) {
+  return (
+    <Transition appear show as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black bg-opacity-25" />
+        </Transition.Child>
+
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900"
+                >
+                  Edit User field like e.g. Name & Email
+                </Dialog.Title>
+                <div className="mt-2">
+                  <p className="text-sm text-gray-500">
+                    {user.email}
+                  </p>
+                </div>
+
+                <div className="mt-4 flex justify-between">
+                  <button
+                    type="button"
+                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    onClick={closeModal}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    onClick={closeModal}
+                  >
+                    Done
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
+  );
 }
