@@ -9,11 +9,11 @@ import { FaUserEdit, FaUsers, FaUserSlash } from 'react-icons/fa';
 import { RxCross1 } from 'react-icons/rx';
 import { GoListUnordered } from 'react-icons/go';
 import { useDispatch, useSelector } from 'react-redux';
-import { Dialog, Transition } from '@headlessui/react';
 import { logout } from '../store/slices/userSlice';
 import { showToastFn } from '../store/slices/ToastSlice';
 import { setCart } from '../store/slices/CartSlice';
 import { showAlertFn } from '../store/slices/AlertSlice';
+import Modal from '../components/Modal';
 
 const headersList = {
   'auth-token': localStorage.getItem('token'),
@@ -178,8 +178,9 @@ function Admin() {
 export default Admin;
 
 function UserTable({ users, fetchAllUser }) {
-  const [showModal, setShowModal] = useState(false);
-  const [editUser, setEditUser] = useState({});
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [targetUser, setTargetUser] = useState(null);
   const handleDeleteUser = async (id) => {
     const response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}admin/users/delete/${id}`, {
       method: 'DELETE',
@@ -190,10 +191,23 @@ function UserTable({ users, fetchAllUser }) {
     console.log(data);
     fetchAllUser();
   };
-  const handleEditUser = async (id, user) => {
-    setShowModal(true);
-    console.log(id, user);
-    setEditUser(user);
+  const handleEditUser = async () => {
+    const bodyContent = JSON.stringify({
+      name: 'Akash',
+      // role: 'admin',
+    });
+
+    const response = await fetch(`http://localhost:3000/admin/users/update/${targetUser._id}`, {
+      method: 'PUT',
+      body: bodyContent,
+      headers: headersList,
+    });
+
+    const data = await response.json();
+    console.log({ bodyContent, data });
+    fetchAllUser();
+
+    console.log(targetUser._id);
   };
 
   return (
@@ -229,20 +243,86 @@ function UserTable({ users, fetchAllUser }) {
                         <button
                           className="text-blue-600"
                           type="button"
-                          onClick={() => handleEditUser(person._id, person)}
+                          onClick={() => {
+                            setShowEditModal(true);
+                            setTargetUser(person);
+                          }}
                         >
                           <FaUserEdit />
-                          {showModal && <EditUserModal user={editUser} closeModal={() => setShowModal(false)} />}
-
                         </button>
                         <button
                           className="text-red-600"
                           type="button"
-                          onClick={() => handleDeleteUser(person._id)}
+                          onClick={() => {
+                            setShowDeleteModal(true);
+                            setTargetUser(person);
+                          }}
                         >
                           <FaUserSlash />
                         </button>
                       </div>
+                      {showEditModal && (
+                      <Modal
+                        closeModal={() => setShowDeleteModal(false)}
+                        title={`Are you sure to Edit user with name ${targetUser.name}`}
+                      >
+                        <>
+                          <div className="mt-2">
+                            {JSON.stringify(targetUser)}
+                            <p className="text-sm text-gray-500">
+                              {targetUser.email}
+                            </p>
+                          </div>
+
+                          <div className="mt-4 flex justify-between">
+                            <button
+                              type="button"
+                              className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                              onClick={() => setShowEditModal(false)}
+                            >
+                              Cancel!
+                            </button>
+                            <button
+                              type="button"
+                              className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                              onClick={() => {
+                                setShowEditModal(false);
+                                handleEditUser(targetUser);
+                              }}
+                            >
+                              Done!
+                            </button>
+                          </div>
+                        </>
+                      </Modal>
+                      )}
+                      {showDeleteModal && (
+                      <Modal
+                        closeModal={() => setShowDeleteModal(false)}
+                        title={`Are you sure to delete user with name ${targetUser.name}`}
+                      >
+                        <div className="mt-4 flex justify-between">
+                          <button
+                            type="button"
+                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                            onClick={() => setShowDeleteModal(false)}
+                          >
+                            Cancel!
+                          </button>
+                          <button
+                            type="button"
+                            className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                            onClick={() => {
+                              setShowDeleteModal(false);
+                              handleDeleteUser(targetUser._id);
+                            }}
+
+                          >
+                            Delete!
+                          </button>
+                        </div>
+                      </Modal>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -258,70 +338,5 @@ function UserTable({ users, fetchAllUser }) {
 function UserCard({ users }) {
   return (
     <div>{JSON.stringify(users)}</div>
-  );
-}
-
-function EditUserModal({ user, closeModal }) {
-  return (
-    <Transition appear show as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeModal}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-black bg-opacity-25" />
-        </Transition.Child>
-
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4 text-center">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                <Dialog.Title
-                  as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
-                >
-                  Edit User field like e.g. Name & Email
-                </Dialog.Title>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">
-                    {user.email}
-                  </p>
-                </div>
-
-                <div className="mt-4 flex justify-between">
-                  <button
-                    type="button"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    onClick={closeModal}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    onClick={closeModal}
-                  >
-                    Done
-                  </button>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </div>
-      </Dialog>
-    </Transition>
   );
 }
