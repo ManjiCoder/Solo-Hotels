@@ -17,6 +17,7 @@ connectToMongo(); // Database Connection Fuction
 app.use('/auth', require('./routes/auth'));
 app.use('/hotel', require('./routes/hotel'));
 app.use('/cart', require('./routes/cart'));
+app.use('/order', require('./routes/order'));
 app.use('/admin', require('./routes/admin'));
 
 app.listen(port, () => {

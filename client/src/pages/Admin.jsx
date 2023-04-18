@@ -172,7 +172,6 @@ function Admin() {
     </div>
   );
 }
-
 export default Admin;
 
 function UserTable({ users, fetchAllUser }) {
