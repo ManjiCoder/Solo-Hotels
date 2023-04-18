@@ -17,7 +17,9 @@ import Modal from '../components/Modal';
 
 const headersList = {
   'auth-token': localStorage.getItem('token'),
+  'Content-Type': 'application/json',
 };
+
 const navListItem = [
   {
     name: 'Dashboard',
@@ -48,20 +50,16 @@ function Admin() {
   const showNav = () => {
     setIsOpen(true);
   };
-  // const closeNav = () => {
-  //   setIsOpen(false);
-  // };
   const [allUser, setAllUser] = useState([]);
   const fetchAllUser = async () => {
     let response;
     try {
-      response = await fetch('http://localhost:3000/admin/users', {
+      response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}admin/users`, {
         method: 'GET',
         headers: headersList,
       });
 
       const data = await response.json();
-      console.log(data);
       setAllUser(data);
       dispatch(showToastFn(response.ok, data.msg || 'Users Loaded'));
     } catch (error) {
@@ -181,33 +179,55 @@ function UserTable({ users, fetchAllUser }) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [targetUser, setTargetUser] = useState(null);
-  const handleDeleteUser = async (id) => {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}admin/users/delete/${id}`, {
-      method: 'DELETE',
-      headers: headersList,
-    });
+  const dispatch = useDispatch();
 
-    const data = await response.json();
-    console.log(data);
-    fetchAllUser();
+  const handleDeleteUser = async (id) => {
+    let response;
+    try {
+      response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}admin/users/delete/${id}`, {
+        method: 'DELETE',
+        headers: headersList,
+      });
+
+      const data = await response.json();
+      console.log(data);
+      fetchAllUser();
+
+      dispatch(showToastFn(response.ok, data.msg));
+    } catch (error) {
+      dispatch(showAlertFn(false, response.statusText, true));
+      console.log({ error }, response.statusText);
+    }
   };
+
   const handleEditUser = async () => {
     const bodyContent = JSON.stringify({
-      name: 'Akash',
-      // role: 'admin',
+      role: targetUser.role === 'admin' ? 'user' : 'admin',
     });
 
-    const response = await fetch(`http://localhost:3000/admin/users/update/${targetUser._id}`, {
-      method: 'PUT',
-      body: bodyContent,
-      headers: headersList,
-    });
+    let response;
+    try {
+      response = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}admin/users/update/${targetUser._id}`, {
+        method: 'PUT',
+        headers: headersList,
+        body: bodyContent,
+      });
 
-    const data = await response.json();
-    console.log({ bodyContent, data });
-    fetchAllUser();
+      const data = await response.json();
+      console.log(data);
 
-    console.log(targetUser._id);
+      dispatch(showToastFn(response.ok, data.msg));
+      if (targetUser.role === 'admin') {
+        dispatch(showAlertFn(false, 'Please refresh the page to see changes', true));
+      } else {
+        setTimeout(() => {
+          fetchAllUser();
+        }, 1000);
+      }
+    } catch (error) {
+      dispatch(showAlertFn(false, response.statusText, true));
+      console.log({ error }, response.statusText);
+    }
   };
 
   return (
@@ -226,7 +246,7 @@ function UserTable({ users, fetchAllUser }) {
 
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {users.map((person) => (
+                {users?.map((person) => (
                   <tr key={person.email}>
                     <td className="capitalize py-4 pl-4 pr-3 text-sm font-medium text-gray-700 whitespace-nowrap sm:pl-6">
                       {person.name}
@@ -263,17 +283,19 @@ function UserTable({ users, fetchAllUser }) {
                       </div>
                       {showEditModal && (
                       <Modal
-                        closeModal={() => setShowDeleteModal(false)}
-                        title={`Are you sure to Edit user with name ${targetUser.name}`}
+                        closeModal={() => setShowEditModal(false)}
+                        title="Are you sure?"
                       >
-                        <>
-                          <div className="mt-2">
-                            {JSON.stringify(targetUser)}
-                            <p className="text-sm text-gray-500">
-                              {targetUser.email}
-                            </p>
-                          </div>
 
+                        <>
+                          <div className="flex flex-col gap-y-2 mt-3">
+                            <h2>Do you want to change role of the</h2>
+                            <h3>
+                              <b>{` ${targetUser.name} `}</b>
+                              to
+                              <b>{` ${targetUser.role === 'admin' ? 'user' : 'admin'}`}</b>
+                            </h3>
+                          </div>
                           <div className="mt-4 flex justify-between">
                             <button
                               type="button"
@@ -286,14 +308,16 @@ function UserTable({ users, fetchAllUser }) {
                               type="button"
                               className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                               onClick={() => {
-                                setShowEditModal(false);
                                 handleEditUser(targetUser);
+                                setShowEditModal(false);
                               }}
                             >
                               Done!
                             </button>
                           </div>
+
                         </>
+
                       </Modal>
                       )}
                       {showDeleteModal && (
