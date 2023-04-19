@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
+import { MdOutlineDownloadDone } from 'react-icons/md';
 import Modal from '../components/Modal';
 import { showAlertFn } from '../store/slices/AlertSlice';
 import { showToastFn } from '../store/slices/ToastSlice';
@@ -110,7 +111,11 @@ function Booking() {
               closeModal={() => setShowModal(false)}
               title="Payment Done & Order Booked Successfully!"
             >
-              <Link to="/">
+              <Link to="/" className="flex flex-col justify-center items-center">
+                <h2 className="text-5xl p-1 my-5 text-green-700 border rounded-full shadow-md">
+                  {' '}
+                  <MdOutlineDownloadDone />
+                </h2>
                 <button
                   type="button"
                   className="my-3 font-semibold w-full text-center text-xl p-3 rounded-full shadow-lg bg-gradient-to-l from-[#df293a] to-[#d11450] hover:scale-[1.02] transition-all text-white"
