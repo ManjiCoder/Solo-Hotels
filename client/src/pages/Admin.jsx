@@ -3,11 +3,11 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  MdBorderAll, MdDashboard, MdLogout, MdMenu,
+  MdDashboard, MdLogout, MdMenu,
 } from 'react-icons/md';
 import { FaUserEdit, FaUsers, FaUserSlash } from 'react-icons/fa';
 import { RxCross1 } from 'react-icons/rx';
-import { GoListUnordered } from 'react-icons/go';
+// import { GoListUnordered } from 'react-icons/go';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../store/slices/userSlice';
 import { showToastFn } from '../store/slices/ToastSlice';
@@ -45,7 +45,7 @@ const navListItem = [
 function Admin() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const [view, setView] = useState('list');
+  // const [view, setView] = useState('list');
   const [isOpen, setIsOpen] = useState(false);
   const showNav = () => {
     setIsOpen(true);
@@ -128,7 +128,7 @@ function Admin() {
       </nav>
 
       <main className="flex flex-1 flex-col p-4">
-        <div className="flex justify-between place-self-end border shadow-lg rounded-md font-semibold overflow-hidden">
+        {/* <div className="flex justify-between place-self-end border shadow-lg rounded-md font-semibold overflow-hidden">
           <button
             type="button"
             className={`transition-all w-20 flex items-center justify-around px-2 py-3 border-r ${view === 'list' && 'bg-gradient-to-l from-[#df293a] to-[#d11450] text-white'}`}
@@ -147,7 +147,7 @@ function Admin() {
             <span>Card</span>
 
           </button>
-        </div>
+        </div> */}
 
         <div className="w-full">
           <div className="px-4 sm:px-6 lg:px-8">
@@ -159,12 +159,21 @@ function Admin() {
                 </p>
               </div>
             </div>
-            {view === 'list' ? (
+            <UserTable
+              users={allUser}
+              fetchAllUser={fetchAllUser}
+            />
+            {/* {view === 'list' ? (
               <UserTable
                 users={allUser}
                 fetchAllUser={fetchAllUser}
               />
-            ) : <UserCard users={allUser} />}
+            ) : (
+              <UserCard
+                users={allUser}
+                fetchAllUser={fetchAllUser}
+              />
+            )} */}
           </div>
         </div>
 
@@ -358,8 +367,37 @@ function UserTable({ users, fetchAllUser }) {
   );
 }
 
-function UserCard({ users }) {
-  return (
-    <div>{JSON.stringify(users)}</div>
-  );
-}
+// function UserCard({ users }) {
+//   return (
+//     <section className="mt-4 border shadow-lg rounded-md py-2 flex flex-col gap-y-4">
+//       {users.map(({
+//         name, email, role, date,
+//       }) => (
+//         <div className="" key={email}>
+//           <div className="px-4 flex items-center space-x-4">
+//             <span
+//               className="flex justify-center items-center h-9 w-9 font-bold text-xl rounded-full ring-0 focus:ring-2 focus:ring-slate-500 bg-slate-50 border shadow-md"
+//             >
+//               {name.charAt(0)}
+//             </span>
+//             <div className="flex-1">
+//               <p className={`text-sm font-medium ${role === 'admin' ? 'text-red-500' : 'text-gray-900'} truncate dark:text-white`}>
+//                 {`${name} - (${role})`}
+//               </p>
+//               <p className="text-sm text-blue-700 truncate dark:text-gray-400">
+//                 {email}
+//               </p>
+//             </div>
+//             <div className="text-right">
+//               <button type="button" className="border rounded-full shadow-lg inline-flex text-2xl items-center font-semibold text-gray-900 dark:text-white">
+//                 <MdSettings />
+//               </button>
+//               <p className="text-xs italic text-gray-600">{`${new Date(date).toDateString()}, ${new Date(date).toLocaleTimeString()}`}</p>
+//             </div>
+//           </div>
+//           <hr className="mt-2" />
+//         </div>
+//       ))}
+//     </section>
+//   );
+// }

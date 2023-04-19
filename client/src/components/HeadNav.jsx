@@ -32,9 +32,9 @@ const navArr = Object.freeze([
     href: '/about',
   },
   {
-    name: 'Booking',
+    name: 'Orders',
     icon: <MdOutlineShoppingBag />,
-    href: '/booking',
+    href: '/orders',
   },
   {
     name: 'Hotels',

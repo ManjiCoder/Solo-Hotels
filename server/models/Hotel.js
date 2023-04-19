@@ -21,6 +21,7 @@ const HotelSchema = new Schema({
   room_facilities: String,
   room_type: String,
   state: String,
+  price: Number,
 });
 
 const HotelModel = mongoose.model('hotel', HotelSchema);

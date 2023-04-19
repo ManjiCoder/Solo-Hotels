@@ -3,7 +3,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable camelcase */
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MdAddCircle, MdRemoveCircle, MdDeleteForever } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -13,7 +13,6 @@ import { showToastFn } from '../store/slices/ToastSlice';
 import BackButton from '../components/BackButton';
 import { showAlertFn } from '../store/slices/AlertSlice';
 
-// console.log(localStorage.getItem('token'));
 const headersList = {
   'auth-token': localStorage.getItem('token'),
   'Content-Type': 'application/json',
@@ -35,6 +34,7 @@ export default Cart;
 
 function CartItem({ userCart }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleRemoveRoom = async (index, id) => {
     const { roomCount } = userCart.order[index];
     if (roomCount <= 1) return dispatch(showToastFn(false, 'Room Cannot Be Empty'));
@@ -111,33 +111,32 @@ function CartItem({ userCart }) {
   };
   return (
     <div className="px-5">
-      <div className="mt-7 grid grid-cols-5 font-bold">
+      <div className="mt-7 grid grid-cols-6 font-bold">
         <h2>Hotel Name</h2>
         <h2>Room-Type</h2>
         <h2>Check-In</h2>
         <h2>Check-Out</h2>
         <h2>Rooms</h2>
+        <h2>Action</h2>
       </div>
       <hr className="my-2 mt-7 h-0.5 bg-gray-300" />
       {userCart.order.map((obj, index) => {
+        console.log(obj);
         const {
           hotel, from, to, roomCount,
         } = obj;
         const {
           _id, property_name, room_type,
         } = hotel;
-        // console.log(room_type);
-        // console.log({ hotel });
         return (
           <section className="" key={_id} id={_id}>
-            <div className="grid grid-cols-5 my-7 items-center gap-y-5">
+            <div className="grid grid-cols-6 my-7 items-center gap-y-5">
               <Link
                 className="font-semibold"
                 state={hotel}
                 to={`/hotel/${_id}`}
               >
                 {property_name}
-
               </Link>
               <h3>{room_type}</h3>
               <h3>{from}</h3>
@@ -166,6 +165,15 @@ function CartItem({ userCart }) {
                   <MdDeleteForever />
                 </button>
               </div>
+              <button
+                type="button"
+                className="mr-3 text-sm font-bold bg-gradient-to-l from-[#df293a] to-[#d11450] text-white p-2 shadow-md rounded-md"
+                onClick={() => {
+                  navigate('/booking', { state: obj });
+                }}
+              >
+                Book Now
+              </button>
             </div>
             <hr className="my-2 h-0.5 bg-gray-300" />
           </section>

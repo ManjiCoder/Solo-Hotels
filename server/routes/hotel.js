@@ -28,6 +28,7 @@ const filterQuery = {
   room_facilities: 1,
   room_type: 1,
   state: 1,
+  price: 1,
 };
 
 // ROUTE: 1 Gell All Hotels Detail Using GET "hotels/all"

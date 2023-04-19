@@ -9,7 +9,7 @@ const router = express.Router();
 
 // ROUTE 1: Book hotels using GET "order/add/:id" Login Require
 router.post('/add/:id', fetchUser, [
-  body('room', 'room required').exists(),
+  body('roomCount', 'room required').exists(),
   body('from', 'check-in required').exists(),
   body('to', 'check-out required').exists(),
 ], async (req, res) => {
@@ -34,7 +34,7 @@ router.post('/add/:id', fetchUser, [
       to,
       room,
     });
-    res.json({ order });
+    res.json({ msg: 'Order Booked', order });
   } catch (error) {
     // If req.params.id is not valid
     if (error.message === `Cast to ObjectId failed for value "${req.params.id}" (type string) at path "_id" for model "hotel"`) {

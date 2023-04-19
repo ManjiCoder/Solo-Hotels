@@ -1,9 +1,8 @@
 /* eslint-disable camelcase */
 import React, { useEffect, useState } from 'react';
 import { MdOutlineStarPurple500 } from 'react-icons/md';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 import { showAlertFn } from '../store/slices/AlertSlice';
 import { addItemToCart, getCartItemFn } from '../store/slices/CartSlice';
@@ -12,6 +11,7 @@ import { showToastFn } from '../store/slices/ToastSlice';
 function Hotel() {
   const { state } = useLocation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   console.log(state);
   // eslint-disable-next-line no-shadow
   const user = useSelector((state) => state.user);
@@ -42,6 +42,7 @@ function Hotel() {
     state: hotelState,
     img,
   } = state;
+  const obj = state;
 
   // console.log(
   //   {
@@ -201,9 +202,13 @@ function Hotel() {
               >
                 Add to cart
               </button>
+
               <button
                 type="button"
                 className="mr-3 text-sm font-bold bg-gradient-to-l from-[#df293a] to-[#d11450] text-white p-2 shadow-md rounded-md"
+                onClick={() => {
+                  navigate('/booking', { state: obj });
+                }}
               >
                 Book Now
               </button>

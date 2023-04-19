@@ -4,52 +4,14 @@ import React from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { MdOutlineStarPurple500 } from 'react-icons/md';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { showAlertFn } from '../store/slices/AlertSlice';
-import { addItemToCart, getCartItemFn } from '../store/slices/CartSlice';
-import { showToastFn } from '../store/slices/ToastSlice';
+import { useNavigate } from 'react-router-dom';
 import BackButton from './BackButton';
 
 function HotelsCard(props) {
   // eslint-disable-next-line react/prop-types
   const { hotels } = props;
   console.log(hotels);
-  const user = useSelector((state) => state.user);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const handleAddToCart = async (id) => {
-    if (user !== null) {
-      let response;
-      try {
-        const bodyContent = JSON.stringify({
-          from: '16-03-2033',
-          to: '15-04-2023',
-        });
-
-        response = await fetch(`http://localhost:3000/cart/add/${id}`, {
-          method: 'POST',
-          headers: {
-            'auth-token': localStorage.getItem('token'),
-            'Content-Type': 'application/json',
-          },
-          body: bodyContent,
-        });
-
-        const data = await response.json();
-        // console.log(data);
-        if (response.ok) dispatch(addItemToCart(data));
-        dispatch(showToastFn(response.ok, data.msg));
-        dispatch(getCartItemFn());
-      } catch (error) {
-        dispatch(showAlertFn(false, response.statusText, true));
-        console.log({ error });
-      }
-    } else {
-      dispatch(showToastFn(false, 'Login to add item to cart', 3000));
-    }
-  };
 
   return (
     <div className=" bg-slate-100">
@@ -60,7 +22,7 @@ function HotelsCard(props) {
           // eslint-disable-next-line no-param-reassign
           obj.img = 'https://cdn.pixabay.com/photo/2014/08/11/21/39/wall-416060_960_720.jpg';
           const {
-            _id, address, state, hotel_star_rating, property_name, img,
+            _id, address, state, hotel_star_rating, property_name, img, price,
           } = obj;
           return (
           // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
@@ -68,9 +30,7 @@ function HotelsCard(props) {
               className="relative hover:scale-[1.03] transition-all ease-in-out duration-300  shadow-md bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700"
               key={_id}
               id={_id}
-              onClick={() => {
-                navigate(`/hotel/${_id}`, { state: obj });
-              }}
+
             >
               {hotel_star_rating && (
                 <p
@@ -97,27 +57,30 @@ function HotelsCard(props) {
                 <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
                   {state}
                 </p>
+                <p className="mb-3 font-medium text-gray-700 dark:text-gray-400">
+                  Price:
+                  {' '}
+                  {`₹${price || Math.floor(Math.random() + 499)}/room`}
+                </p>
 
                 <div className="flex justify-between my-3">
                   <button
                     type="button"
                     className="inline-flex shadow-md items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    onClick={() => handleAddToCart(_id)}
-                  >
-                    Add to cart
-                  </button>
-                  <Link
-                    className="inline-flex shadow-md items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    state={{
-                      data: {
-                        obj,
-                      },
+                    onClick={() => {
+                      navigate(`/hotel/${_id}`, { state: obj });
                     }}
-                    to={`/hotel/${_id}`}
+                  >
+                    View More
+                  </button>
+                  <button
+                    type="button"
+                    className="inline-flex shadow-md items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    onClick={() => navigate('/booking', { state: obj })}
                   >
 
                     Book Now
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>
