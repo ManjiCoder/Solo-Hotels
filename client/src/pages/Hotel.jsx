@@ -206,11 +206,9 @@ function Hotel() {
               <button
                 type="button"
                 className="mr-3 text-sm font-bold bg-gradient-to-l from-[#df293a] to-[#d11450] text-white p-2 shadow-md rounded-md"
-                onClick={() => {
-                  navigate('/booking', { state: obj });
-                }}
+
               >
-                Book Now
+                {`₹ ${499}/room`}
               </button>
             </div>
           </div>

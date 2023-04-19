@@ -31,11 +31,11 @@ const navArr = Object.freeze([
     icon: <AiOutlineQuestionCircle />,
     href: '/about',
   },
-  {
-    name: 'Orders',
-    icon: <MdOutlineShoppingBag />,
-    href: '/orders',
-  },
+  // {
+  //   name: 'Orders',
+  //   icon: <MdOutlineShoppingBag />,
+  //   href: '/orders',
+  // },
   {
     name: 'Hotels',
     icon: <BsBuildings />,

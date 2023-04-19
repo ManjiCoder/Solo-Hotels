@@ -4,15 +4,51 @@ import React from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { MdOutlineStarPurple500 } from 'react-icons/md';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { showAlertFn } from '../store/slices/AlertSlice';
+import { addItemToCart, getCartItemFn } from '../store/slices/CartSlice';
+import { showToastFn } from '../store/slices/ToastSlice';
 import BackButton from './BackButton';
 
 function HotelsCard(props) {
   // eslint-disable-next-line react/prop-types
   const { hotels } = props;
   console.log(hotels);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const handleAddToCart = async (id) => {
+    if (user !== null) {
+      let response;
+      try {
+        const bodyContent = JSON.stringify({
+          from: '16-03-2033',
+          to: '15-04-2023',
+        });
 
+        response = await fetch(`http://localhost:3000/cart/add/${id}`, {
+          method: 'POST',
+          headers: {
+            'auth-token': localStorage.getItem('token'),
+            'Content-Type': 'application/json',
+          },
+          body: bodyContent,
+        });
+
+        const data = await response.json();
+        // console.log(data);
+        if (response.ok) dispatch(addItemToCart(data));
+        dispatch(showToastFn(response.ok, data.msg));
+        dispatch(getCartItemFn());
+      } catch (error) {
+        dispatch(showAlertFn(false, response.statusText, true));
+        console.log({ error });
+      }
+    } else {
+      dispatch(showToastFn(false, 'Login to add item to cart', 3000));
+    }
+  };
   return (
     <div className=" bg-slate-100">
       <BackButton />
@@ -76,10 +112,9 @@ function HotelsCard(props) {
                   <button
                     type="button"
                     className="inline-flex shadow-md items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    onClick={() => navigate('/booking', { state: obj })}
+                    onClick={() => handleAddToCart(_id)}
                   >
-
-                    Book Now
+                    Add to cart
                   </button>
                 </div>
               </div>

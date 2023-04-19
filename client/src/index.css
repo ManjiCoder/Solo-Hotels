@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,6 +8,7 @@
 /* For disabling tap highlighter blue shade */
 * {
     -webkit-tap-highlight-color: rgba(255, 0, 0, 0);
+    font-family: 'Ubuntu', sans-serif;
 }
 
 /* For hidden scrollbar */

@@ -108,7 +108,7 @@ function Booking() {
             {showModal && (
             <Modal
               closeModal={() => setShowModal(false)}
-              title="Order Booked! Successfully"
+              title="Payment Done & Order Booked Successfully!"
             >
               <Link to="/">
                 <button
@@ -116,7 +116,7 @@ function Booking() {
                   className="my-3 font-semibold w-full text-center text-xl p-3 rounded-full shadow-lg bg-gradient-to-l from-[#df293a] to-[#d11450] hover:scale-[1.02] transition-all text-white"
 
                 >
-                  Go to Home Page.
+                  Go to Home Page
 
                 </button>
               </Link>
